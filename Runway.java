@@ -2,7 +2,7 @@ package project1;
 
 public class Runway {
 
-	private ListArrayBased<Plane> planeQueue;//Rewritten CDLS to be generic
+	private ListArrayBasedPlus<Plane> planeQueue;//Rewritten CDLS to be generic
 	private boolean landing, open;
 
 	/**
@@ -12,7 +12,7 @@ public class Runway {
 	{
 		landing = false;//Not landing
 		open = false;//Not open
-		planeQueue = new ListArrayBased<Plane>();
+		planeQueue = new ListArrayBasedPlus<Plane>();
 	}//end Default
 
 	/**
@@ -24,7 +24,7 @@ public class Runway {
 	{
 		this.landing = landing;
 		this.open = open;
-		planeQueue = new ListArrayBased<Plane>();
+		planeQueue = new ListArrayBasedPlus<Plane>();
 	}//end constructor 
 	
 	/**
