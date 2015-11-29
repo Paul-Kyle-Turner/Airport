@@ -11,7 +11,11 @@ public class Runway {
 	public Runway()
 	{
 		landing = false;//Not landing
+<<<<<<< HEAD
 		open = true;//open
+=======
+		open = false;//Not open
+>>>>>>> master
 		planeQueue = new ListArrayBasedPlus<Plane>();
 	}//end Default
 
@@ -75,7 +79,7 @@ public class Runway {
 	
 	/**
 	 * searches for the correct item in this list via sequential search
-	 //TODO
+	
 	  * possible change in this codes implementation
 	 * @param key
 	 * @return
