@@ -8,5 +8,5 @@ public interface AscendinglyOrderedListADT<T extends KeyedItem<KT>, KT extends C
 	public void add(T item) throws ListIndexOutOfBoundsException;
 	public T get(int index) throws ListIndexOutOfBoundsException;
 	public void remove(int index) throws ListIndexOutOfBoundsException;
-	public int search(T item);
+	public int search(KT key);
 }

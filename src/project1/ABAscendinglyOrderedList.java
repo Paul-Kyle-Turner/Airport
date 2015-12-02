@@ -33,7 +33,7 @@ public class ABAscendinglyOrderedList<T extends KeyedItem<KT>,KT extends Compara
 	public void add(T item) throws ListIndexOutOfBoundsException {
 		if(numItems == items.length)
 			resize();
-		int index = search(item);
+		int index = search(item.getKey());
 		for (int pos = numItems-1; pos >= index; pos--) {
             items[pos+1] = items[pos];
         }
@@ -79,7 +79,7 @@ public class ABAscendinglyOrderedList<T extends KeyedItem<KT>,KT extends Compara
 	}
 
 	@Override
-	public int search(T item) {
+	public int search(KT key) {
 		if(isEmpty())
 			return 0;
 		else
@@ -92,13 +92,13 @@ public class ABAscendinglyOrderedList<T extends KeyedItem<KT>,KT extends Compara
 				while(low < high)
 				{
 					mid = (low +  high)/2;
-					if(item.getKey().compareTo(((T)items[mid]).getKey()) > 0)
+					if(key.compareTo(((T)items[mid]).getKey()) > 0)
 						low = ++mid;
 					else
 						high = mid;			
 				}
 			}
-			if(item.getKey().compareTo(((T)items[mid]).getKey()) > 0)
+			if(key.compareTo(((T)items[mid]).getKey()) > 0)
 				mid = mid + 1;
 			return mid;
 		}

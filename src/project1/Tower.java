@@ -68,7 +68,7 @@ public class Tower implements TowerInterface{
 	@Override
 	public void planeTakesOff(Plane departure) {
 		// TODO Auto-generated method stub
-		int index = planes.search(departure);
+		int index = planes.search(departure.getKey());
 		if(planes.get(index).getKey().equals(departure.getKey()))
 			planes.remove(index);
 	}
@@ -124,22 +124,8 @@ public class Tower implements TowerInterface{
 	@Override
 	public boolean isValidFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-		int low = 0;
-		int high = planes.size() - 1;
-		int mid = 0;
-		while(low < high)
-		{
-			mid = (low + high)/2;
-			if(planes.get(mid).getKey().compareTo(flightNumber) > 0)
-			{
-				low = mid + 1;
-			}
-			else
-			{
-				high = mid;
-			}
-		}
-		if(planes.get(low).getKey().compareTo(flightNumber) == 0)
+		int index = planes.search(flightNumber);
+		if(planes.get(index).getKey().compareTo(flightNumber) == 0)
 			return false;
 		else
 			return true;
