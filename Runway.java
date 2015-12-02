@@ -4,18 +4,16 @@ public class Runway {
 
 	private ListArrayBasedPlus<Plane> planeQueue;//Rewritten CDLS to be generic
 	private boolean landing, open;
+	private String name;
 
 	/**
 	 * Default Constructor
 	 */
 	public Runway()
 	{
+		name = null;
 		landing = false;//Not landing
-<<<<<<< HEAD
 		open = true;//open
-=======
-		open = false;//Not open
->>>>>>> master
 		planeQueue = new ListArrayBasedPlus<Plane>();
 	}//end Default
 
@@ -24,10 +22,11 @@ public class Runway {
 	 * @param landing
 	 * @param open
 	 */
-	public Runway(boolean landing, boolean open)
+	public Runway(String name, boolean landing)
 	{
+		this.name = name;
 		this.landing = landing;
-		this.open = open;
+		this.open = true;
 		planeQueue = new ListArrayBasedPlus<Plane>();
 	}//end constructor 
 	
@@ -75,7 +74,7 @@ public class Runway {
 		}catch(ListIndexOutOfBoundsException e){
 			return null;
 		}
-	}
+	}//end removePlaneFromBack
 	
 	/**
 	 * searches for the correct item in this list via sequential search
@@ -93,29 +92,19 @@ public class Runway {
 			}
 		}
 		return temp;
-	}
+	}//end findAndRemovePlaneFromQueue
 	
 	/**
 	 * removes all items from the queue
 	 */
-	public void removeAllPlanesFromQueue(){
+	public Plane[] removeAllPlanesFromQueue(){
+		Plane[] planes = new Plane[planeQueue.numItems];
+		for(int i = 0; i < planeQueue.numItems;i++){
+			planes[i] = planeQueue.get(i);
+		}
 		planeQueue.removeAll();
-	}
-
-	/**
-	 * adds a plane to the back of the queue
-	 */
-	public void addPlaneToQueue(Plane plane){
-		planeQueue.add(planeQueue.size(), plane);
-	}
-	
-	/**
-	 * adds a plane to the front of the queue
-	 * @param plane
-	 */
-	public void addPlaneToTheFrontQueue(Plane plane){
-		planeQueue.add(0, plane);
-	}
+		return planes;
+	}//end removeAllPlanesFromQueue
 
 	/**
 	 * returns if this is a landing runway 
@@ -148,5 +137,32 @@ public class Runway {
 	public void setOpen(boolean open) {
 		this.open = open;
 	}
+
+	/**
+	 * gets the name of the runway
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * allows you to reset the name of the runway
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		String value = "These planes are waiting for takeoff on runway " + name + "\n";
+		for(int i = 0; i < planeQueue.numItems;i++){
+			value += planeQueue.get(i).toString();
+		}
+		return value;
+	}
+	
+	
 
 }
