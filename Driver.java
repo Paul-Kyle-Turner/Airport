@@ -8,6 +8,7 @@ public class Driver {
 	private static Tower tower = new Tower();
 	private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 	private static boolean programEnd = false;
+	private static int numberOfPlanesLeft;
 
 	/**
 	 * starts the program and continues displaying menu and asking for input as long as programEnd is false
@@ -29,7 +30,11 @@ public class Driver {
 			String name = null;
 			do{
 				System.out.println("Please enter name of runway.");
-				name = stdin.readLine().trim();
+				try {
+					name = stdin.readLine().trim();
+				} catch (IOException e) {
+					System.out.println("Something broke in startingRunways");
+				}
 			}while(!tower.isValidRunwayName(name));
 			tower.addRunway(name);
 		}
@@ -41,13 +46,31 @@ public class Driver {
 	private static void selectMenuItem() {
 		switch (getIndex("Get index for menu selection"))  { //gets index of switch
 		case 1 :
-			planeEntersSystem();
+			try {
+				planeEntersSystem();
+			} catch (IOException e) {
+				System.out.println("IOException in the plane entering the system");
+			}
 			break;
 		case 2 :
 			planeLeavesTheSystem();
 			break;
 		case 3 :
-			planeReEnters();
+			try {
+				planeReEnters();
+			} catch (IOException e) {
+				System.out.println("IOException in plane reentering the system");
+			}
+			break;
+		case 4 :
+			try {
+				runwayOpens();
+			} catch (IOException e) {
+				System.out.println("IOException in runway creation the system");
+			}
+			break;
+		case 5 :
+			runwayClose();
 			break;
 		default :
 			System.out.println("Unrecognized menu selection - please eneter a valid menu select");
@@ -56,14 +79,67 @@ public class Driver {
 	}
 
 
-	private static void planeReEnters() {
-		
-		String fligthNumber = null;
+	private static void runwayClose() {
+		String name = "";
+		boolean stop = true;
+		while(stop){
+			System.out.println("Enter runway:");
+			name = stdin.readLine();
+			if(!tower.isValidRunwayName(name))
+				stop =false;
+			else{
+				System.out.println("No such runway!");
+			}
+		}
+		Plane[] planes = tower.getRunwaysPlanesForRunwayClose(name);
+		for(int i = 0;  i < planes.length-1; i++)
+		{
+			boolean halt = true;
+			String runway = null;
+			while(halt)
+			{
+				System.out.println("Enter a runway for flight " + planes[i]);
+				runway = stdin.readLine().trim();
+				if(tower.){
+					
+				}
+			}
+		}
+	}
+
+	private static void runwayOpens() throws IOException {
+		String name = "";
+		do{
+			System.out.println("Please enter a runway name that you would like to use.");
+			name = stdin.readLine().trim();
+		}while(tower.isValidRunwayName(name));
+		System.out.println("Is this a landing Runway?");
+		String answer = stdin.readLine().trim().toUpperCase();
+		boolean landing = false;
+		if(answer.equals("YES")){
+			landing = true;
+		}
+		tower.createNewRunway(name , landing);
+	}
+
+	private static void planeReEnters() throws IOException {
+		if(tower.hasNoReenteringPlanes()){
+			System.out.println("No planes waiting to re-enter.");
+			return;
+		}
+		String flightNumber = null;
+		boolean stop = true;
+		Plane plane = null;
 		do{
 			System.out.println("Please enter valid reenter flight number.");
-		}while(tower.isValidReenterFlightNumber(flightNumber));
-		
-		
+			flightNumber = stdin.readLine().trim();
+			if(plane = tower.isValidReEnteringFlightNumber(flightNumber)){
+				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
+			}
+			else{
+				System.out.println("Flight " + flightNumber + " is not waiting for clearance.");
+			}
+		}while(stop);
 	}
 
 	private static void planeLeavesTheSystem() {
@@ -81,12 +157,13 @@ public class Driver {
 			}
 			else{
 				unrecognized = true;
+				
 			}
 		}while(!unrecognized);
 
 	}
 
-	private static void planeEntersSystem() {
+	private static void planeEntersSystem() throws IOException {
 		String flightNumber = null;
 		String runwayName = null;
 		do{
