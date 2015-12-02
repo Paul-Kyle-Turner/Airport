@@ -57,25 +57,50 @@ public class Tower implements TowerInterface{
 	public void addPlaneToSystem(String flightNumber, String destination,
 			String runwayName) {
 		planes.add(new Plane(flightNumber, destination, runways.get(findRunway(runwayName))));
-		
 	}
 
 	@Override
 	public Plane getNextReadyFlight() {
 		// TODO Auto-generated method stub
-		return null;
+		return runways.get(currentRunway).removePlaneFromFront();
 	}
 
 	@Override
-	public void planeTakesOff() {
+	public void planeTakesOff(Plane departure) {
 		// TODO Auto-generated method stub
-		
+		int index = planes.search(departure);
+		if(planes.get(index).getKey().equals(departure.getKey()))
+			planes.remove(index);
 	}
 
 	@Override
-	public void reenterPlaneIntoSystem(Plane plane) {
+	public void reenterPlaneIntoSystem(Plane plane, boolean isWaiting) {
 		// TODO Auto-generated method stub
-		
+		plane.getRunway().addPlaneToBack(plane);
+		if(isWaiting)
+		{
+			boolean found = false;
+			int index = 0;
+			while(!found && index < waiting.size())
+			{
+				if(waiting.get(index).equals(plane))
+				{
+					waiting.remove(index);
+					found = true;
+				}
+				else
+				{
+					index++;
+				}
+			}
+		}
+	}
+	
+	public Plane[] closeRunway(String name)
+	{
+		Runway runway = runways.get(findRunway(name));
+		runway.setOpen(false);
+		return runway.removeAllPlanesFromQueue();
 	}
 
 	@Override
