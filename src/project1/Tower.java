@@ -21,49 +21,16 @@ public class Tower implements TowerInterface{
 		/*
 		 * sequential search here
 		 */
-		boolean found = false;
-		int index = 0;
-		while(!found && index < runways.size())
-		{
-			if(runways.get(index).getName().equals(name)))
-				
-		}
-		return false;
+		if(findRunway(name) != -1)
+			return false;
+		else
+			return true;
 	}
 
 	@Override
 	public void addRunway(String name) {
 		// TODO Auto-generated method stub
-		if(isValidRunwayName(name))
-		{
-			runways.add(runways.size(), new Runway(false, true, name));
-		}
-	}
-
-	/**
-	 * We might want to have tower implement this functionality inside of addPlaneToSystem method for efficiency
-	 */
-	protected int findPlane(String flightNumber) {
-		// TODO Auto-generated method stub
-		int low = 0;
-		int high = planes.size() - 1;
-		int mid = 0;
-		while(low < high)
-		{
-			mid = (low + high)/2;
-			if(planes.get(mid).getKey().compareTo(flightNumber) > 0)
-			{
-				low = mid + 1;
-			}
-			else
-			{
-				high = mid;
-			}
-		}
-		if(planes.get(low).getKey().compareTo(flightNumber) == 0)
-			return low;
-		else
-			return -1;
+		runways.add(runways.size(), new Runway(false, true, name));
 	}
 	
 	protected int findRunway(String name)
@@ -79,30 +46,17 @@ public class Tower implements TowerInterface{
 						found = true;
 					else
 							index++;
-						
 				}
-				return index;
+				if(found)
+					return index;
+				else
+					return -1;
 	}
 
 	@Override
 	public void addPlaneToSystem(String flightNumber, String destination,
 			String runwayName) {
-		int low = 0;
-		int high = planes.size() - 1;
-		int mid = 0;
-		while(low < high)
-		{
-			mid = (low + high)/2;
-			if(planes.get(mid).getKey().compareTo(flightNumber) > 0)
-			{
-				low = mid + 1;
-			}
-			else
-			{
-				high = mid;
-			}
-		}
-		if(planes.get(low).getKey().compareTo(flightNumber) == 0)
+		planes.add(new Plane(flightNumber, destination, runways.get(findRunway(runwayName))));
 		
 	}
 
@@ -127,7 +81,43 @@ public class Tower implements TowerInterface{
 	@Override
 	public boolean isValidReenterFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-		return false;
+		boolean found = false;
+		int index = 0;
+		while(!found && index < runways.size())
+		{
+			if(planes.get(index).getKey().equals(flightNumber))
+				found = true;
+			else
+					index++;
+		}
+		if(found)
+			return false;
+		else
+			return true;
+	}
+
+	@Override
+	public boolean isValidFlightNumber(String flightNumber) {
+		// TODO Auto-generated method stub
+		int low = 0;
+		int high = planes.size() - 1;
+		int mid = 0;
+		while(low < high)
+		{
+			mid = (low + high)/2;
+			if(planes.get(mid).getKey().compareTo(flightNumber) > 0)
+			{
+				low = mid + 1;
+			}
+			else
+			{
+				high = mid;
+			}
+		}
+		if(planes.get(low).getKey().compareTo(flightNumber) == 0)
+			return false;
+		else
+			return true;
 	}
 
 }
