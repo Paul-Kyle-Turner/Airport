@@ -9,12 +9,17 @@ public class Runway {
 	/**
 	 * Default Constructor
 	 */
-	public Runway()
+	public Runway(String name)
 	{
 		name = null;
 		landing = false;//Not landing
 		open = true;//open
+<<<<<<< HEAD:src/project1/Runway.java
+		//open = false;//Not open
+=======
+>>>>>>> master:Runway.java
 		planeQueue = new ListArrayBasedPlus<Plane>();
+		this.name = name;
 	}//end Default
 
 	/**
@@ -22,12 +27,17 @@ public class Runway {
 	 * @param landing
 	 * @param open
 	 */
+<<<<<<< HEAD:src/project1/Runway.java
+	public Runway(boolean landing, boolean open, String name)
+=======
 	public Runway(String name, boolean landing)
+>>>>>>> master:Runway.java
 	{
 		this.name = name;
 		this.landing = landing;
 		this.open = true;
 		planeQueue = new ListArrayBasedPlus<Plane>();
+		this.name = name;
 	}//end constructor 
 	
 	/**
@@ -128,6 +138,11 @@ public class Runway {
 	 */
 	public boolean isOpen() {
 		return open;
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 
 	/**
