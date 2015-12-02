@@ -26,4 +26,11 @@ public class Plane extends KeyedItem<String> {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
+
+	@Override
+	public String toString() {
+		return "Flight "  + getKey() + " to "  + destination + ".\n";
+	}
+	
+	
 }
