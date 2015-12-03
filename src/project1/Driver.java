@@ -36,7 +36,7 @@ public class Driver {
 					System.out.println("Something broke in startingRunways");
 				}
 			}while(!tower.isValidRunwayName(name));
-			tower.addRunway(name);
+			tower.createNewRunway(name, false);;
 		}
 	}
 

@@ -26,12 +26,6 @@ public class Tower implements TowerInterface{
 		else
 			return true;
 	}
-
-	@Override
-	public void addRunway(String name) {
-		// TODO Auto-generated method stub
-		runways.add(runways.size(), new Runway(name, false));
-	}
 	
 	protected int findRunway(String name)
 	{
@@ -133,13 +127,7 @@ public class Tower implements TowerInterface{
 		else
 			return true;
 	}
-
-	@Override
-	public Plane getReenteringPlane(String flightNumber) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public boolean hasNoReenteringPlanes() {
 		// TODO Auto-generated method stub
