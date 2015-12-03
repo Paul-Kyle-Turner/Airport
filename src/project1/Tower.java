@@ -71,8 +71,8 @@ public class Tower implements TowerInterface{
 	
 	@Override
 	public void reenterPlaneIntoSystem(Plane plane) {
-		//TODO Method needs to be rewritten for adding a plane back into the REENETERING system
-		//TODO current execution is incorrect
+		//TODO Method needs to be rewritten for adding a plane back into the REENETERING system 
+		//This is when the plane is removed from the runway queue
 		plane.getRunway().addPlaneToBack(plane);
 		if(isWaiting)
 		{

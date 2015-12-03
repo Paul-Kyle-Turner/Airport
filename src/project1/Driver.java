@@ -136,9 +136,8 @@ public class Driver {
 					System.out.println("This is not a valid runway!");
 				}
 				else{
-					Runway temp = tower.getRunway(runway);
-					System.out.println("Flight " + planes[i].toString() + " is being added to ruwnay " + temp.getName());
-					tower.addPlaneToRunway(planes[i]);
+					System.out.println("Flight " + planes[i].toString() + " is being added to ruwnay " + runway);
+					tower.addPlaneToRunway(planes[i],runway);
 				}
 			}
 		}
@@ -188,9 +187,11 @@ public class Driver {
 			String answer = stdin.readLine().trim().toUpperCase();
 			if(answer == "Y" || answer == "YES"){
 				tower.planeTakesOff(plane);
+				unrecognized = false;
 			}
 			else if(answer == "N" || answer == "NO"){
 				tower.reenterPlaneIntoSystem(plane);
+				System.out.println("Flight " + plane.toString() + " is now waiting to take off.");
 			}
 			else{
 				unrecognized = true;
