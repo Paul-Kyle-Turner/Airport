@@ -30,7 +30,7 @@ public class Tower implements TowerInterface{
 	@Override
 	public void addRunway(String name) {
 		// TODO Auto-generated method stub
-		runways.add(runways.size(), new Runway(false, true, name));
+		runways.add(runways.size(), new Runway(name, false));
 	}
 	
 	protected int findRunway(String name)
@@ -73,9 +73,12 @@ public class Tower implements TowerInterface{
 			planes.remove(index);
 	}
 
+	
+	
 	@Override
-	public void reenterPlaneIntoSystem(Plane plane, boolean isWaiting) {
-		// TODO Auto-generated method stub
+	public void reenterPlaneIntoSystem(Plane plane) {
+		//TODO Method needs to be rewritten for adding a plane back into the REENETERING system
+		//TODO current execution is incorrect
 		plane.getRunway().addPlaneToBack(plane);
 		if(isWaiting)
 		{
@@ -129,6 +132,60 @@ public class Tower implements TowerInterface{
 			return false;
 		else
 			return true;
+	}
+
+	@Override
+	public Plane getReenteringPlane(String flightNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasNoReenteringPlanes() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void createNewRunway(String name, boolean landing) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addPlaneToRunway(Plane plane) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Plane[] getRunwaysPlanesForRunwayClose(String runwayName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runway getRunway(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String displayInfoPlanesReenter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String displayInfoPlanesString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

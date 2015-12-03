@@ -2,7 +2,7 @@ package project1;
 
 public class Runway {
 
-	private ListArrayBasedPlus<Plane> planeQueue;//Rewritten CDLS to be generic
+	private ListArrayBasedPlus<Plane> planeQueue;
 	private boolean landing, open;
 	private String name;
 
@@ -14,10 +14,7 @@ public class Runway {
 		name = null;
 		landing = false;//Not landing
 		open = true;//open
-<<<<<<< HEAD:src/project1/Runway.java
 		//open = false;//Not open
-=======
->>>>>>> master:Runway.java
 		planeQueue = new ListArrayBasedPlus<Plane>();
 		this.name = name;
 	}//end Default
@@ -27,11 +24,7 @@ public class Runway {
 	 * @param landing
 	 * @param open
 	 */
-<<<<<<< HEAD:src/project1/Runway.java
-	public Runway(boolean landing, boolean open, String name)
-=======
 	public Runway(String name, boolean landing)
->>>>>>> master:Runway.java
 	{
 		this.name = name;
 		this.landing = landing;
@@ -39,7 +32,7 @@ public class Runway {
 		planeQueue = new ListArrayBasedPlus<Plane>();
 		this.name = name;
 	}//end constructor 
-	
+
 	/**
 	 * Adds a plane to the front of the queue
 	 * @param plane
@@ -47,7 +40,7 @@ public class Runway {
 	public void addPlaneToFront(Plane plane){
 		planeQueue.add(0, plane);
 	}//end addFront
-	
+
 	/**
 	 * Adds a plane to the back of the queue
 	 * @param plane
@@ -55,7 +48,7 @@ public class Runway {
 	public void addPlaneToBack(Plane plane){
 		planeQueue.add(planeQueue.size(), plane);
 	}//end plane to queue
-	
+
 	/**
 	 * Removes a plane from the front of the queue and returns it
 	 * if list index out of bounds returns a null
@@ -70,7 +63,7 @@ public class Runway {
 			return null;
 		}
 	}//end remove from front
-	
+
 	/**
 	 * removes the plane from the back of the queue
 	 * if catches a list index out of bounds, returns a null
@@ -85,11 +78,11 @@ public class Runway {
 			return null;
 		}
 	}//end removePlaneFromBack
-	
+
 	/**
 	 * searches for the correct item in this list via sequential search
-	
-	  * possible change in this codes implementation
+
+	 * possible change in this codes implementation
 	 * @param key
 	 * @return
 	 */
@@ -103,7 +96,7 @@ public class Runway {
 		}
 		return temp;
 	}//end findAndRemovePlaneFromQueue
-	
+
 	/**
 	 * removes all items from the queue
 	 */
@@ -139,7 +132,7 @@ public class Runway {
 	public boolean isOpen() {
 		return open;
 	}
-	
+
 	public String getName()
 	{
 		return name;
@@ -151,14 +144,6 @@ public class Runway {
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
-	}
-
-	/**
-	 * gets the name of the runway
-	 * @return
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -177,7 +162,7 @@ public class Runway {
 		}
 		return value;
 	}
-	
-	
+
+
 
 }
