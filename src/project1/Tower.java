@@ -30,7 +30,7 @@ public class Tower implements TowerInterface{
 	@Override
 	public void addRunway(String name) {
 		// TODO Auto-generated method stub
-		runways.add(runways.size(), new Runway(false, true, name));
+		runways.add(runways.size(), new Runway(name, false));
 	}
 	
 	protected int findRunway(String name)

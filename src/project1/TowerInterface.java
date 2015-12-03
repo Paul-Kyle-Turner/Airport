@@ -13,5 +13,5 @@ public interface TowerInterface {
 	public boolean hasNoReenteringPlanes();//returns true if no planes are wanting to reenter
 	public void createNewRunway(String name, boolean landing);//creates and adds a runway to the system
 	public void addPlaneToRunway(Plane plane);//adds a plane that is specified to a certain runway
-	public Plane[] getRunwaysPlanesForRunwayClose(Stirng runwayName);//returns an array of planes from a valid runway
+	public Plane[] getRunwaysPlanesForRunwayClose(String runwayName);//returns an array of planes from a valid runway
 }
