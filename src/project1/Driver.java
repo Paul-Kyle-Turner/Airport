@@ -35,7 +35,7 @@ public class Driver {
 				} catch (IOException e) {
 					System.out.println("Something broke in startingRunways");
 				}
-			}while(!tower.isValidRunwayName(name));
+			}while(tower.isValidRunwayName(name));
 			tower.createNewRunway(name, false);;
 		}
 	}
@@ -213,7 +213,7 @@ public class Driver {
 		{
 			System.out.println("Please enter valid runway name : ");
 			runwayName = stdin.readLine().trim();
-		}while(tower.isValidRunwayName(runwayName));
+		}while(!tower.isValidRunwayName(runwayName));
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 

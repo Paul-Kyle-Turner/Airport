@@ -168,6 +168,11 @@ public class Runway {
 		return value;
 	}
 	
+	public boolean isEmpty()
+	{
+		return planeQueue.isEmpty();
+	}
+	
 	
 
 }

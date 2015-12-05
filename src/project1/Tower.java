@@ -21,8 +21,10 @@ public class Tower implements TowerInterface{
 		/*
 		 * sequential search here
 		 */
-		if(findRunway(name) != -1)
+		if(findRunway(name) == -1)
+		{
 			return false;
+		}
 		else
 			return true;
 	}
@@ -40,7 +42,7 @@ public class Tower implements TowerInterface{
 					if(runways.get(index).getName().equals(name))
 						found = true;
 					else
-							index++;
+						index++;
 				}
 				if(found)
 					return index;
@@ -51,13 +53,30 @@ public class Tower implements TowerInterface{
 	@Override
 	public void addPlaneToSystem(String flightNumber, String destination,
 			String runwayName) {
-		planes.add(new Plane(flightNumber, destination, runways.get(findRunway(runwayName))));
+		Runway runway = runways.get(findRunway(runwayName));
+		Plane newPlane = new Plane(flightNumber, destination, runway);
+		runway.addPlaneToBack(newPlane);
+		planes.add(newPlane);
+		
 	}
 
+	/**
+	 * Returns the next ready flight in the system.
+	 * @return The next ready flight if there are planes in the system, null if no planes found. 
+	 */
 	@Override
 	public Plane getNextReadyFlight() {
 		// TODO Auto-generated method stub
-		return runways.get(currentRunway).removePlaneFromFront();
+		int i = 0;
+		do {
+		currentRunway = (currentRunway + 1)%runways.size();
+		} while(runways.get(currentRunway).isEmpty() && ++i < runways.size());
+		if(i == runways.size())
+		{
+			return null;
+		}
+		else
+			return runways.get(currentRunway).removePlaneFromFront();
 	}
 
 	@Override
@@ -100,27 +119,26 @@ public class Tower implements TowerInterface{
 		// TODO Auto-generated method stub
 		boolean found = false;
 		int index = 0;
-		while(!found && index < runways.size())
+		while(!found && index < waiting.size())
 		{
-			if(planes.get(index).getKey().equals(flightNumber))
+			if(waiting.get(index).getKey().equals(flightNumber))
 				found = true;
 			else
-					index++;
+				index++;
 		}
 		if(found)
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 
 	@Override
 	public boolean isValidFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-		int index = planes.search(flightNumber);
-		if(planes.get(index).getKey().compareTo(flightNumber) == 0)
-			return false;
-		else
-			return true;
+			if(!planes.isEmpty() && planes.get(planes.search(flightNumber)).getKey().compareTo(flightNumber) == 0)
+				return true;
+			else
+				return false;
 	}
 
 	@Override
