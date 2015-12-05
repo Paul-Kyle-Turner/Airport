@@ -36,7 +36,7 @@ public class Driver {
 					System.out.println("Something broke in startingRunways");
 				}
 			}while(!tower.isValidRunwayName(name));
-			tower.addRunway(name);
+			tower.createNewRunway(name, false);;
 		}
 	}
 
@@ -53,7 +53,11 @@ public class Driver {
 			}
 			break;
 		case 2 :
-			planeLeavesTheSystem();
+			try {
+				planeLeavesTheSystem();
+			} catch (IOException e1) {
+				System.out.println("IOException in plane leaving the system");
+			}
 			break;
 		case 3 :
 			try {
@@ -70,7 +74,23 @@ public class Driver {
 			}
 			break;
 		case 5 :
-			runwayClose();
+			try {
+				runwayClose();
+			} catch (IOException e) {
+				System.out.println("IOException in runway closing the system");
+			}
+			break;
+		case 6 :
+			displayInfoAboutPlanesWaitingToTakeOff();
+			break;
+		case 7 : 
+			displayInfoAboutPlanesWaitingToReEnter();
+			break;
+		case 8 :
+			System.out.println("The number of planes that have taken off is " + numberOfPlanesLeft);
+			break;
+		case 9 :
+			programEnd = false;
 			break;
 		default :
 			System.out.println("Unrecognized menu selection - please eneter a valid menu select");
@@ -79,7 +99,15 @@ public class Driver {
 	}
 
 
-	private static void runwayClose() {
+	private static void displayInfoAboutPlanesWaitingToReEnter() {
+		System.out.println(tower.displayInfoPlanesReenter());
+	}
+
+	private static void displayInfoAboutPlanesWaitingToTakeOff() {
+		System.out.println(tower.displayInfoPlanesString());
+	}
+
+	private static void runwayClose() throws IOException {
 		String name = "";
 		boolean stop = true;
 		while(stop){
@@ -98,10 +126,18 @@ public class Driver {
 			String runway = null;
 			while(halt)
 			{
-				System.out.println("Enter a runway for flight " + planes[i]);
+				System.out.println("Enter a runway for flight " + planes[i].toString());
 				runway = stdin.readLine().trim();
-				if(tower.){
-					
+				System.out.println(runway);
+				if(name.equals(runway)){
+					System.out.println("This is the runway that is closing.");
+				}
+				else if(!tower.isValidRunwayName(runway)){
+					System.out.println("This is not a valid runway!");
+				}
+				else{
+					System.out.println("Flight " + planes[i].toString() + " is being added to ruwnay " + runway);
+					tower.addPlaneToRunway(planes[i],runway);
 				}
 			}
 		}
@@ -129,11 +165,11 @@ public class Driver {
 		}
 		String flightNumber = null;
 		boolean stop = true;
-		Plane plane = null;
 		do{
 			System.out.println("Please enter valid reenter flight number.");
 			flightNumber = stdin.readLine().trim();
-			if(plane = tower.isValidReEnteringFlightNumber(flightNumber)){
+			if(tower.isValidReenterFlightNumber(flightNumber)){
+				Plane plane = tower.getPlaneBasedOnFlightNumber(flightNumber);
 				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
 			}
 			else{
@@ -142,7 +178,7 @@ public class Driver {
 		}while(stop);
 	}
 
-	private static void planeLeavesTheSystem() {
+	private static void planeLeavesTheSystem() throws IOException {
 		boolean unrecognized = false;
 		do{
 			Plane plane = tower.getNextReadyFlight();
@@ -151,13 +187,14 @@ public class Driver {
 			String answer = stdin.readLine().trim().toUpperCase();
 			if(answer == "Y" || answer == "YES"){
 				tower.planeTakesOff(plane);
+				unrecognized = false;
 			}
 			else if(answer == "N" || answer == "NO"){
 				tower.reenterPlaneIntoSystem(plane);
+				System.out.println("Flight " + plane.toString() + " is now waiting to take off.");
 			}
 			else{
 				unrecognized = true;
-				
 			}
 		}while(!unrecognized);
 
@@ -178,24 +215,6 @@ public class Driver {
 			runwayName = stdin.readLine().trim();
 		}while(tower.isValidRunwayName(runwayName));
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
-	}
-
-	/**
-	 * requests a string
-	 * @return some string
-	 */
-	private static String getSomeString(String string){
-		String index = "";
-		try {
-			System.out.println(string);
-			index = stdin.readLine().trim(); //sets index to the integer that was recived
-			System.out.println(index);
-		} catch (NumberFormatException e) {
-			System.out.println("NumberFormatting Error at getIndex.");
-		} catch (IOException e) {
-			System.out.println("IO Error has occured at getIndex.");
-		}
-		return index;
 	}
 
 	/**

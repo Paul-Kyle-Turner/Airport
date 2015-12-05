@@ -137,20 +137,18 @@ public class Runway {
 		return open;
 	}
 
+
+	public String getName()
+	{
+		return name;
+	}
+
 	/**
 	 * returns if the set is open
 	 * @param open
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
-	}
-
-	/**
-	 * gets the name of the runway
-	 * @return
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**

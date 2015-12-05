@@ -27,11 +27,6 @@ public class Tower implements TowerInterface{
 			return true;
 	}
 
-	@Override
-	public void addRunway(String name) {
-		// TODO Auto-generated method stub
-		runways.add(runways.size(), new Runway(name, false));
-	}
 	
 	protected int findRunway(String name)
 	{
@@ -74,11 +69,9 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public void reenterPlaneIntoSystem(Plane plane, boolean isWaiting) {
+	public void reenterPlaneIntoSystem(Plane plane) {
 		// TODO Auto-generated method stub
 		plane.getRunway().addPlaneToBack(plane);
-		if(isWaiting)
-		{
 			boolean found = false;
 			int index = 0;
 			while(!found && index < waiting.size())
@@ -93,7 +86,6 @@ public class Tower implements TowerInterface{
 					index++;
 				}
 			}
-		}
 	}
 	
 	public Plane[] closeRunway(String name)
@@ -129,6 +121,78 @@ public class Tower implements TowerInterface{
 			return false;
 		else
 			return true;
+	}
+
+	@Override
+	public boolean hasNoReenteringPlanes() {
+		// TODO Auto-generated method stub
+		return waiting.isEmpty();
+	}
+
+	@Override
+	public void createNewRunway(String name, boolean landing) {
+		// TODO Auto-generated method stub
+		runways.add(runways.size(), new Runway(name, landing));
+	}
+
+	@Override
+	public void addPlaneToRunway(Plane plane) {
+		// TODO Auto-generated method stub
+		plane.getRunway().addPlaneToBack(plane);
+	}
+
+	@Override
+	public void addPlaneToRunway(Plane plane, String name) {
+		// TODO Auto-generated method stub
+		int index = findRunway(name);
+		if(index != 1)
+		{
+			Runway runway = runways.get(index);
+			runway.addPlaneToBack(plane);
+			plane.setRunway(runway);
+		}
+	}
+
+	//This method should not be used. the closeRunway method returns planes contained within the runway
+	@Override
+	public Plane[] getRunwaysPlanesForRunwayClose(String runwayName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
+		// TODO Auto-generated method stub
+		if(!planes.isEmpty())
+		{
+			Plane plane = planes.get(planes.search(flightNumber));
+			return plane.getKey().equals(flightNumber) ? plane : null;
+			
+		}
+		else
+			return null;
+	}
+
+	@Override
+	public Runway getRunway(String name) {
+		// TODO Auto-generated method stub
+		int index = findRunway(name);
+		if(index != 1)
+			return runways.get(index);
+		else
+			return null;
+	}
+
+	@Override
+	public String displayInfoPlanesReenter() {
+		// TODO Auto-generated method stub
+		return waiting.toString();
+	}
+
+	@Override
+	public String displayInfoPlanesString() {
+		// TODO Auto-generated method stub
+		return runways.toString();
 	}
 
 }
