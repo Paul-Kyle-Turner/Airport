@@ -84,11 +84,10 @@ public class ABQueue<T> implements QueueInterface<T> {
 		return returnString;
 	}
 
-	public T peek() throws QueueException
+	public T peek()
 	{
 		if(numItems > 0)
 			return items[front];
-		else
-			throw(new QueueException("No items in the queue"));
+		return null;
 	}
 }
