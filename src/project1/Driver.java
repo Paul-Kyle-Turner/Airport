@@ -272,7 +272,7 @@ public class Driver {
 		System.out.println("Is this a landing Runway?");
 		String answer = stdin.readLine().trim().toUpperCase();
 		boolean landing = false;
-		if(answer.equals("YES")){
+		if(answer.equals("YES") || answer.equals("Y")){
 			landing = true;
 		}
 		tower.createNewRunway(name , landing);
