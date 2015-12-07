@@ -169,6 +169,7 @@ public class Driver {
 			else{
 				System.out.println("No such runway!");
 			}
+		}
 			QueueInterface<Plane> planes = tower.closeRunway(name);
 			try {
 				while(true)
@@ -212,7 +213,6 @@ public class Driver {
 			{
 				
 			}
-		}
 		System.out.println("Runway " + name + " has been closed.");
 	}
 
