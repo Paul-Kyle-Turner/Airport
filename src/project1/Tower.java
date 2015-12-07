@@ -173,13 +173,6 @@ public class Tower implements TowerInterface{
 		}
 	}
 
-	//This method should not be used. the closeRunway method returns planes contained within the runway
-	@Override
-	public Plane[] getRunwaysPlanesForRunwayClose(String runwayName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub

@@ -168,6 +168,9 @@ public class Runway {
 		return value;
 	}
 	
+	/**
+	 * @return true if the runway is empty
+	 */
 	public boolean isEmpty()
 	{
 		return planeQueue.isEmpty();

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Driver {
-	
 	private static Tower tower = new Tower();
 	private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 	private static boolean programEnd = false;
@@ -25,7 +24,11 @@ public class Driver {
 		System.out.println("Ending program.");
 	}
 
-	private static void startingRunways() {
+	/**
+	 * method for getting the starting runways.
+	 * Asks for number of runways then asks for the names of each runway
+	 */
+	static void startingRunways() {
 		int value = getIndex("Number of starting runways");
 		for(int i = 0; i < value; i++){
 			String name = null;
@@ -36,7 +39,7 @@ public class Driver {
 				} catch (IOException e) {
 					System.out.println("Something broke in startingRunways");
 				}
-			}while(tower.isValidRunwayName(name));
+			}while(!tower.isExsistingRunwayName(name));
 			tower.createNewRunway(name, false);;
 		}
 	}
@@ -100,27 +103,44 @@ public class Driver {
 	}
 
 
+	/**
+	 * displays the information about the planes waiting to enter
+	 */
 	private static void displayInfoAboutPlanesWaitingToReEnter() {
 		System.out.println(tower.displayInfoPlanesReenter());
 	}
 
+	/**
+	 * displays all information about the planes waiting to take off
+	 */
 	private static void displayInfoAboutPlanesWaitingToTakeOff() {
 		System.out.println(tower.displayInfoPlanesString());
 	}
 
+	/**
+	 * closes a runway
+	 * method close runway returns a array of planes that equal to the planes that are on the runway
+	 * then does a loop of placing the planes on to other runways
+	 * if any problems occur forces to reenter differing names
+	 * @throws IOException
+	 */
 	private static void runwayClose() throws IOException {
+		if(!tower.hasMultipleOpenRuwnays()){
+			System.out.println("The government requires at least one open runway.");
+			return;
+		}
 		String name = "";
 		boolean stop = true;
 		while(stop){
 			System.out.println("Enter runway:");
 			name = stdin.readLine();
-			if(!tower.isValidRunwayName(name))
+			if(!tower.isExistingRunwayName(name))
 				stop =false;
 			else{
 				System.out.println("No such runway!");
 			}
 		}
-		Plane[] planes = tower.getRunwaysPlanesForRunwayClose(name);
+		Plane[] planes = tower.closeRunway(name);
 		for(int i = 0;  i < planes.length-1; i++)
 		{
 			boolean halt = true;
@@ -133,7 +153,7 @@ public class Driver {
 				if(name.equals(runway)){
 					System.out.println("This is the runway that is closing.");
 				}
-				else if(!tower.isValidRunwayName(runway)){
+				else if(!tower.isExistingRunwayName(runway)){
 					System.out.println("This is not a valid runway!");
 				}
 				else{
@@ -144,12 +164,16 @@ public class Driver {
 		}
 	}
 
+	/**
+	 * opens a new runway by asking for name
+	 * @throws IOException
+	 */
 	private static void runwayOpens() throws IOException {
 		String name = "";
 		do{
 			System.out.println("Please enter a runway name that you would like to use.");
 			name = stdin.readLine().trim();
-		}while(tower.isValidRunwayName(name));
+		}while(tower.isExistingRunwayName(name));
 		System.out.println("Is this a landing Runway?");
 		String answer = stdin.readLine().trim().toUpperCase();
 		boolean landing = false;
@@ -169,7 +193,7 @@ public class Driver {
 		do{
 			System.out.println("Please enter valid reenter flight number.");
 			flightNumber = stdin.readLine().trim();
-			if(tower.isValidReenterFlightNumber(flightNumber)){
+			if(tower.isExistingReenterFlightNumber(flightNumber)){
 				Plane plane = tower.getPlaneBasedOnFlightNumber(flightNumber);
 				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
 			}
@@ -181,10 +205,10 @@ public class Driver {
 
 	private static void planeLeavesTheSystem() throws IOException {
 		boolean unrecognized = true;
-			Plane plane = tower.getNextReadyFlight();
-			System.out.println(plane.toString());
-			System.out.println("Please specifiy if the plane has clearance to take off. Y/N");
-			String answer = stdin.readLine().trim().toUpperCase();
+		Plane plane = tower.getNextReadyFlight();
+		System.out.println(plane.toString());
+		System.out.println("Please specifiy if the plane has clearance to take off. Y/N");
+		String answer = stdin.readLine().trim().toUpperCase();
 		do {
 			if(answer.equals("Y") || answer.equals("YES")){
 				tower.planeTakesOff(plane);
@@ -200,19 +224,23 @@ public class Driver {
 	}
 
 	private static void planeEntersSystem() throws IOException {
+		if(!tower.hasPlanesOnRunways()){
+			System.out.println("There are no planes on runways for takeoff.");
+			return;
+		}
 		String flightNumber = null;
 		String runwayName = null;
 		do{
 			System.out.print("Please enter valid flight number : ");
 			flightNumber = stdin.readLine().trim();
-		}while(tower.isValidFlightNumber(flightNumber));
+		}while(tower.isExistingFlightNumber(flightNumber));
 		System.out.println("Please enter destination.");
 		String destination = stdin.readLine().trim();
 		do
 		{
 			System.out.println("Please enter valid runway name : ");
 			runwayName = stdin.readLine().trim();
-		}while(!tower.isValidRunwayName(runwayName));
+		}while(!tower.isExistingRunwayName(runwayName));
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 
