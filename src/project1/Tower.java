@@ -21,11 +21,14 @@ public class Tower implements TowerInterface{
 		/*
 		 * sequential search here
 		 */
-		if(findRunway(name) != -1)
+		if(findRunway(name) == -1)
+		{
 			return false;
+		}
 		else
 			return true;
 	}
+
 	
 	protected int findRunway(String name)
 	{
@@ -39,7 +42,7 @@ public class Tower implements TowerInterface{
 					if(runways.get(index).getName().equals(name))
 						found = true;
 					else
-							index++;
+						index++;
 				}
 				if(found)
 					return index;
@@ -50,13 +53,30 @@ public class Tower implements TowerInterface{
 	@Override
 	public void addPlaneToSystem(String flightNumber, String destination,
 			String runwayName) {
-		planes.add(new Plane(flightNumber, destination, runways.get(findRunway(runwayName))));
+		Runway runway = runways.get(findRunway(runwayName));
+		Plane newPlane = new Plane(flightNumber, destination, runway);
+		runway.addPlaneToBack(newPlane);
+		planes.add(newPlane);
+		
 	}
 
+	/**
+	 * Returns the next ready flight in the system.
+	 * @return The next ready flight if there are planes in the system, null if no planes found. 
+	 */
 	@Override
 	public Plane getNextReadyFlight() {
 		// TODO Auto-generated method stub
-		return runways.get(currentRunway).removePlaneFromFront();
+		int i = 0;
+		do {
+		currentRunway = (currentRunway + 1)%runways.size();
+		} while(runways.get(currentRunway).isEmpty() && ++i < runways.size());
+		if(i == runways.size())
+		{
+			return null;
+		}
+		else
+			return runways.get(currentRunway).removePlaneFromFront();
 	}
 
 	@Override
@@ -67,30 +87,10 @@ public class Tower implements TowerInterface{
 			planes.remove(index);
 	}
 
-	
-	
 	@Override
 	public void reenterPlaneIntoSystem(Plane plane) {
-		//TODO Method needs to be rewritten for adding a plane back into the REENETERING system 
-		//This is when the plane is removed from the runway queue
-		plane.getRunway().addPlaneToBack(plane);
-		if(isWaiting)
-		{
-			boolean found = false;
-			int index = 0;
-			while(!found && index < waiting.size())
-			{
-				if(waiting.get(index).equals(plane))
-				{
-					waiting.remove(index);
-					found = true;
-				}
-				else
-				{
-					index++;
-				}
-			}
-		}
+		// TODO Auto-generated method stub
+		waiting.add(waiting.size(), plane);
 	}
 	
 	public Plane[] closeRunway(String name)
@@ -105,47 +105,75 @@ public class Tower implements TowerInterface{
 		// TODO Auto-generated method stub
 		boolean found = false;
 		int index = 0;
-		while(!found && index < runways.size())
+		while(!found && index < waiting.size())
 		{
-			if(planes.get(index).getKey().equals(flightNumber))
+			if(waiting.get(index).getKey().equals(flightNumber))
 				found = true;
 			else
-					index++;
+				index++;
 		}
 		if(found)
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 
 	@Override
 	public boolean isValidFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-		int index = planes.search(flightNumber);
-		if(planes.get(index).getKey().compareTo(flightNumber) == 0)
-			return false;
-		else
-			return true;
+			int index = planes.search(flightNumber);
+			
+			if(!planes.isEmpty() && index != planes.size() && planes.get(index).getKey().compareTo(flightNumber) == 0)
+				return true;
+			else
+				return false;
 	}
-	
+
 	@Override
 	public boolean hasNoReenteringPlanes() {
 		// TODO Auto-generated method stub
-		return false;
+		return waiting.isEmpty();
 	}
 
 	@Override
 	public void createNewRunway(String name, boolean landing) {
 		// TODO Auto-generated method stub
-		
+		runways.add(runways.size(), new Runway(name, landing));
 	}
 
 	@Override
 	public void addPlaneToRunway(Plane plane) {
 		// TODO Auto-generated method stub
-		
+		plane.getRunway().addPlaneToBack(plane);
+		boolean found = false;
+		int index = 0;
+		while(!found && index < waiting.size())
+		{
+			if(waiting.get(index).equals(plane))
+			{
+				waiting.remove(index);
+				found = true;
+			}
+			else
+			{
+				index++;
+			}
+		}
 	}
 
+	@Override
+	public void addPlaneToRunway(Plane plane, String name) {
+		// TODO Auto-generated method stub
+		int index = findRunway(name);
+		if(index != 1)
+		{
+			Runway runway = runways.get(index);
+			runway.addPlaneToBack(plane);
+			plane.setRunway(runway);
+		}
+	}
+
+	//This method should not be used. the closeRunway method returns planes contained within the runway
 	@Override
 	public Plane[] getRunwaysPlanesForRunwayClose(String runwayName) {
 		// TODO Auto-generated method stub
@@ -155,25 +183,36 @@ public class Tower implements TowerInterface{
 	@Override
 	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-		return null;
+		if(!planes.isEmpty())
+		{
+			Plane plane = planes.get(planes.search(flightNumber));
+			return plane.getKey().equals(flightNumber) ? plane : null;
+			
+		}
+		else
+			return null;
 	}
 
 	@Override
 	public Runway getRunway(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		int index = findRunway(name);
+		if(index != 1)
+			return runways.get(index);
+		else
+			return null;
 	}
 
 	@Override
 	public String displayInfoPlanesReenter() {
 		// TODO Auto-generated method stub
-		return null;
+		return waiting.toString();
 	}
 
 	@Override
 	public String displayInfoPlanesString() {
 		// TODO Auto-generated method stub
-		return null;
+		return runways.toString();
 	}
 
 }

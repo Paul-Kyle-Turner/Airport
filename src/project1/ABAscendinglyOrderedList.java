@@ -104,7 +104,7 @@ public class ABAscendinglyOrderedList<T extends KeyedItem<KT>,KT extends Compara
 		}
 	}
 	
-	public String toString() {
+	public String toString() { 
         String info = "";
         String separatorString = " ";
         for(int i = 0; i < numItems; i++) {
