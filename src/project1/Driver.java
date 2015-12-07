@@ -39,7 +39,7 @@ public class Driver {
 				} catch (IOException e) {
 					System.out.println("Something broke in startingRunways");
 				}
-			}while(!tower.isExistingRunwayName(name));
+			}while(tower.isExistingRunwayName(name));
 			tower.createNewRunway(name, false);;
 		}
 	}
@@ -204,6 +204,10 @@ public class Driver {
 	}
 
 	private static void planeLeavesTheSystem() throws IOException {
+		if(!tower.hasPlanesOnRunways()){
+			System.out.println("There are no planes on runways for takeoff.");
+			return;
+		}
 		boolean unrecognized = true;
 		Plane plane = tower.getNextReadyFlight();
 		System.out.println(plane.toString());
@@ -224,10 +228,6 @@ public class Driver {
 	}
 
 	private static void planeEntersSystem() throws IOException {
-		if(!tower.hasPlanesOnRunways()){
-			System.out.println("There are no planes on runways for takeoff.");
-			return;
-		}
 		String flightNumber = null;
 		String runwayName = null;
 		do{
@@ -240,7 +240,7 @@ public class Driver {
 		{
 			System.out.println("Please enter valid runway name : ");
 			runwayName = stdin.readLine().trim();
-		}while(!tower.isExistingRunwayName(runwayName));
+		}while(tower.isExistingRunwayName(runwayName));
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 
