@@ -16,11 +16,8 @@ public class Tower implements TowerInterface{
 	}
 	
 	@Override
-	public boolean isValidRunwayName(String name) {
+	public boolean isExistingRunwayName(String name) {
 		// TODO Auto-generated method stub
-		/*
-		 * sequential search here
-		 */
 		if(findRunway(name) == -1)
 		{
 			return false;
@@ -28,7 +25,6 @@ public class Tower implements TowerInterface{
 		else
 			return true;
 	}
-
 	
 	protected int findRunway(String name)
 	{
@@ -58,6 +54,29 @@ public class Tower implements TowerInterface{
 		runway.addPlaneToBack(newPlane);
 		planes.add(newPlane);
 		
+	}
+	
+	public boolean hasMultipleOpenRunways()
+	{
+		int numOpenRunways = 0;
+		for(int i = 0; i < runways.size() && numOpenRunways < 2; i++)
+		{
+			if(!runways.get(i).isOpen())
+				numOpenRunways++;
+		}
+		return numOpenRunways >= 2;
+	}
+	
+	
+	public boolean hasPlanesOnRunways()
+	{
+		boolean hasPlanes = false;
+		for(int i = 0; i < runways.size() && !hasPlanes; i++)
+		{
+			if(!runways.get(i).isEmpty())
+				hasPlanes = true;
+		}
+		return hasPlanes;
 	}
 
 	/**
@@ -101,7 +120,7 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public boolean isValidReenterFlightNumber(String flightNumber) {
+	public boolean isExistingReenterFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
 		boolean found = false;
 		int index = 0;
@@ -119,7 +138,7 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public boolean isValidFlightNumber(String flightNumber) {
+	public boolean isExistingFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
 			int index = planes.search(flightNumber);
 			
