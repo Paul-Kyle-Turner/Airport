@@ -359,22 +359,9 @@ public class Tower implements TowerInterface{
 		else
 			return null;
 	}
-<<<<<<< HEAD
 	/**
 	 * Returns formatted info regarding all of the planes waiting to reenter a runway
 	 */
-=======
-
-	@Override
-	public Runway getRunway(String name) {
-		int index = findRunway(name);
-		if(index != 1)
-			return runways.get(index);
-		else
-			return null;
-	}
-
->>>>>>> master
 	@Override
 	public String displayInfoPlanesReenter() {
 		if(waiting.size() > 0)
