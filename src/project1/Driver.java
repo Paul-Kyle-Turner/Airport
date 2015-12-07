@@ -213,58 +213,6 @@ public class Driver {
 				
 			}
 		}
-		QueueInterface<Plane> planes = tower.closeRunway(name);
-		try {
-			while(planes.peek() != null)
-			{
-				Plane plane = planes.dequeue();
-				boolean halt = true;
-				String runway = null;
-				while(halt)
-				{
-					System.out.println("Enter a runway for flight " + plane.toString());
-					runway = stdin.readLine().trim();
-					System.out.println(runway);
-					if(name.equals(runway)){
-						System.out.println("This is the runway that is closing.");
-					}
-					else if(!tower.isExistingRunwayName(runway)){
-						System.out.println("This is not a valid runway!");
-					}
-					else{
-						System.out.println("Flight " + plane.toString() + " is waiting for takeoff on runway " + runway);
-						tower.addPlaneToRunway(plane ,runway);
-						halt = false;
-					}
-				}
-			}
-			planes.dequeue();
-			while(planes.peek() != null)
-			{
-				Plane plane = planes.dequeue();
-				boolean halt = true;
-				String runway = null;
-				while(halt)
-				{
-					System.out.println("Enter a runway for flight " + plane.toString());
-					runway = stdin.readLine().trim();
-					System.out.println(runway);
-					if(name.equals(runway)){
-						System.out.println("This is the runway that is closing.");
-					}
-					else if(!tower.isExistingRunwayName(runway)){
-						System.out.println("This is not a valid runway!");
-					}
-					else{
-						System.out.println("Flight " + plane.toString() + " is waiting to reenter runway " + runway);
-						tower.setPlaneReenterTarget(plane, runway);
-						halt = false;
-					}
-				}
-			}
-		} catch(QueueException e){
-			//we got a queueException because queue is empty on peek
-		}
 		System.out.println("Runway " + name + " has been closed.");
 	}
 
