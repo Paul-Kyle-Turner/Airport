@@ -155,7 +155,7 @@ public class Driver {
 	 */
 	private static void runwayClose() throws IOException {
 		
-		System.out.print("Would you like to remove a landing runway or a takeoff runway? ");
+		System.out.print("Would you like to remove a landing runway (Y) or a takeoff runway (N)? ");
 		boolean unrecognized = true;
 		boolean isLanding = false;
 		do {
@@ -183,12 +183,12 @@ public class Driver {
 		while(stop){
 			System.out.println("Enter runway:");
 			name = stdin.readLine().trim();
-			if(isLanding && tower.isExistingLandingRunwayName(name))
-				stop =false;
-			else if(!isLanding && tower.isExistingTakeoffRunwayName(name))
-				stop = false;
+			if(isLanding && !tower.isExistingLandingRunwayName(name))
+				System.out.println("There is no such landing runway!");
+			else if(!isLanding && !tower.isExistingTakeoffRunwayName(name))
+				System.out.println("There is no such takeoff runway!");
 			else{
-				System.out.println("No such runway!");
+				stop = false;
 			}
 		}
 		QueueInterface<Plane> waitingPlanes = tower.getAllPlanesWaitingForRunway(name);
@@ -221,14 +221,17 @@ public class Driver {
 			String runway = null;
 			while(halt && occuringPlanes)
 			{
-				System.out.println("Enter a runway for flight " + plane.toString());
+				System.out.println("Enter a runway for " + plane.toString());
 				runway = stdin.readLine().trim();
 				System.out.println(runway);
 				if(name.equals(runway)){
 					System.out.println("This is the runway that is closing.");
 				}
-				else if((isLanding && !tower.isExistingLandingRunwayName(runway)) || (!isLanding && !tower.isExistingTakeoffRunwayName(runway))){
-					System.out.println("This is not a valid runway!");
+				else if(isLanding && !tower.isExistingLandingRunwayName(runway)){
+					System.out.println("This is not an existing landing runway!");
+				}
+				else if(!isLanding && !tower.isExistingTakeoffRunwayName(runway)){
+					System.out.println("This is not an existing take-off runway!");
 				}
 				else{
 					if(!waitingQueue)
@@ -292,7 +295,11 @@ public class Driver {
 			flightNumber = stdin.readLine().trim();
 			if(tower.isExistingReenterFlightNumber(flightNumber)){
 				Plane plane = tower.getPlaneBasedOnFlightNumber(flightNumber);
-				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
+				Runway runway = plane.getRunway();
+				if(runway.isLanding())
+					System.out.println("Flight " + flightNumber + " is now waiting for clearance to land on runway " + runway.getName());
+				else
+					System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + runway.getName());
 				stop = false;
 				tower.reenterPlaneIntoRunway(plane);
 			}
