@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Driver {
+	
 	private static Tower tower = new Tower();
 	private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 	private static boolean programEnd = false;
