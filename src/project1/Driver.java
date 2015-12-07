@@ -285,13 +285,32 @@ public class Driver {
 			System.out.print("Please enter valid flight number : ");
 			flightNumber = stdin.readLine().trim();
 		}while(tower.isExistingFlightNumber(flightNumber));
-		System.out.println("Please enter destination.");
-		String destination = stdin.readLine().trim();
-		do
-		{
-			System.out.println("Please enter valid runway name : ");
-			runwayName = stdin.readLine().trim();
-		}while(!tower.isExistingRunwayName(runwayName));
+		System.out.print("Is the flight landing (N) or taking-off(Y): ");
+		String answer = stdin.readLine().trim().toUpperCase();
+		boolean unrecognized = true;
+		String destination = "";
+		do {
+			if(answer.equals("Y") || answer.equals("YES")){
+				System.out.println("Please enter destination.");
+				destination = stdin.readLine().trim();
+				do
+				{
+					System.out.println("Please enter valid takeoff runway name : ");
+					runwayName = stdin.readLine().trim();
+				}while(!tower.isExistingTakeoffRunwayName(runwayName));
+				unrecognized = false;
+			}
+			else if(answer.equals("N") || answer.equals("NO")){
+				do
+				{
+					System.out.println("Please enter valid landing runway name : ");
+					runwayName = stdin.readLine().trim();
+					destination = "Airport";
+				}while(!tower.isExistingLandingRunwayName(runwayName));
+				
+				unrecognized = false;
+			}
+		}while(unrecognized);
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 
@@ -318,7 +337,7 @@ public class Driver {
 	 */
 	private static void displayMenu() {
 		System.out.println("1.Plane enters the system.\n"
-				+ "2.Plane takes off.\n"
+				+ "2.Plane takes-off/lands.\n"
 				+ "3.Plane is allowed to re-enter a runway.\n"
 				+ "4.Runway Opens.\n"
 				+ "5.Runway Closes.\n"
