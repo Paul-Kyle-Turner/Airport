@@ -90,21 +90,7 @@ public class Tower implements TowerInterface{
 	@Override
 	public void reenterPlaneIntoSystem(Plane plane) {
 		// TODO Auto-generated method stub
-		plane.getRunway().addPlaneToBack(plane);
-			boolean found = false;
-			int index = 0;
-			while(!found && index < waiting.size())
-			{
-				if(waiting.get(index).equals(plane))
-				{
-					waiting.remove(index);
-					found = true;
-				}
-				else
-				{
-					index++;
-				}
-			}
+		waiting.add(waiting.size(), plane);
 	}
 	
 	public Plane[] closeRunway(String name)
@@ -135,7 +121,9 @@ public class Tower implements TowerInterface{
 	@Override
 	public boolean isValidFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
-			if(!planes.isEmpty() && planes.get(planes.search(flightNumber)).getKey().compareTo(flightNumber) == 0)
+			int index = planes.search(flightNumber);
+			
+			if(!planes.isEmpty() && index != planes.size() && planes.get(index).getKey().compareTo(flightNumber) == 0)
 				return true;
 			else
 				return false;
@@ -157,6 +145,20 @@ public class Tower implements TowerInterface{
 	public void addPlaneToRunway(Plane plane) {
 		// TODO Auto-generated method stub
 		plane.getRunway().addPlaneToBack(plane);
+		boolean found = false;
+		int index = 0;
+		while(!found && index < waiting.size())
+		{
+			if(waiting.get(index).equals(plane))
+			{
+				waiting.remove(index);
+				found = true;
+			}
+			else
+			{
+				index++;
+			}
+		}
 	}
 
 	@Override

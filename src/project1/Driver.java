@@ -179,24 +179,22 @@ public class Driver {
 	}
 
 	private static void planeLeavesTheSystem() throws IOException {
-		boolean unrecognized = false;
-		do{
+		boolean unrecognized = true;
 			Plane plane = tower.getNextReadyFlight();
 			System.out.println(plane.toString());
 			System.out.println("Please specifiy if the plane has clearance to take off. Y/N");
 			String answer = stdin.readLine().trim().toUpperCase();
-			if(answer == "Y" || answer == "YES"){
+		do {
+			if(answer.equals("Y") || answer.equals("YES")){
 				tower.planeTakesOff(plane);
 				unrecognized = false;
 			}
-			else if(answer == "N" || answer == "NO"){
+			else if(answer.equals("N") || answer.equals("NO")){
 				tower.reenterPlaneIntoSystem(plane);
 				System.out.println("Flight " + plane.toString() + " is now waiting to take off.");
+				unrecognized = false;
 			}
-			else{
-				unrecognized = true;
-			}
-		}while(!unrecognized);
+		}while(unrecognized);
 
 	}
 
