@@ -45,6 +45,27 @@ public class Tower implements TowerInterface{
 		else
 			return null;
 	}
+
+	public boolean hasMultipleLandingRunways()
+	{
+		return getNumberOfLandingRunways() > 1;
+	}
+	
+	public boolean hasMultipleTakeoffRunways()
+	{
+		return (runways.size() - getNumberOfLandingRunways()) > 1;
+	}
+	
+	protected int getNumberOfLandingRunways()
+	{
+		int numLanding = 0;
+		for(int i = 0; i < runways.size(); i++)
+		{
+			if(runways.get(i).isLanding())
+				numLanding++;
+		}
+		return numLanding;
+	}
 	
 	public boolean isExistingLandingRunwayName(String name)
 	{
@@ -98,12 +119,10 @@ public class Tower implements TowerInterface{
 		
 	}
 	
-	public boolean hasMultipleOpenRunways()
-	{
-		return runways.size() > 1;
-	}
-	
-	
+	/**
+	 * Says whether or not the tower sees any planes on the runways
+	 * @return true if there are planes, false if there are not
+	 */
 	public boolean hasPlanesOnRunways()
 	{
 		boolean hasPlanes = false;
@@ -134,6 +153,10 @@ public class Tower implements TowerInterface{
 			return runways.get(currentRunway).removePlaneFromFront();
 	}
 
+	/**
+	 * Removes a plane from the system, as it took off/landed
+	 * @param departure The plane that took off
+	 */
 	@Override
 	public void planeTakesOff(Plane departure) {
 		// TODO Auto-generated method stub
@@ -142,6 +165,10 @@ public class Tower implements TowerInterface{
 			planes.remove(index);
 	}
 
+	/**
+	 * Adds an existing plane to the waiting pool
+	 * @param plane The plane that is now waiting for reentry
+	 */
 	@Override
 	public void addExistingPlaneIntoWaiting(Plane plane) {
 		// TODO Auto-generated method stub
@@ -161,6 +188,11 @@ public class Tower implements TowerInterface{
 		return planes;
 	}
 	
+	/**
+	 * Returns all planes waiting for a runway with the specified name
+	 * @param name The name of an existing runway, validated using the isExistingRunwayName method
+	 * @return The Queue containing all planes that are waiting for a runway
+	 */
 	public QueueInterface<Plane> getAllPlanesWaitingForRunway(String name)
 	{
 		QueueInterface<Plane> planes = new ABQueue<Plane>();
@@ -175,6 +207,11 @@ public class Tower implements TowerInterface{
 		return planes;
 	}
 
+	/**
+	 * Checks if a given flightNumber is the flightNumber of a plane in the system waiting for reentry
+	 * @param flightNumber The flightNumber to check
+	 * @return true if the flightNumber exists, false if not
+	 */
 	@Override
 	public boolean isExistingReenterFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
@@ -193,6 +230,10 @@ public class Tower implements TowerInterface{
 			return false;
 	}
 
+	/**
+	 * Checks if a given flightNumber matches any plane in the system, waiting or not
+	 * @param flightNumber
+	 */
 	@Override
 	public boolean isExistingFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
