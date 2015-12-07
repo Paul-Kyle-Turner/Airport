@@ -77,7 +77,7 @@ public class ABQueue<T> implements QueueInterface<T> {
 		int n = 0;
 		while(n < numItems)
 		{
-			returnString += items[i] + " ";
+			returnString += items[i] + "\n";
 			i = (i + 1)%items.length;
 			n++;
 		}
