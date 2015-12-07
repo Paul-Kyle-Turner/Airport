@@ -29,7 +29,17 @@ public class Driver {
 	 * Asks for number of runways then asks for the names of each runway
 	 */
 	static void startingRunways() {
-		int value = getIndex("Number of starting runways");
+		int value = 0;
+		boolean validNumRunways = false;
+		do {
+			value = getIndex("Number of starting runways");
+			if(value > 1)
+				validNumRunways = true;
+			else
+				System.out.println("There must be at least two runways (One for landing, one for takeoff)!");
+		}while(!validNumRunways);
+		boolean hasLandingRunways = false;
+		boolean hasTakeoffRunways = false;
 		for(int i = 0; i < value; i++){
 			String name = null;
 			do{
