@@ -171,6 +171,7 @@ public class Driver {
 			}
 		}
 		boolean isLandingRunway = tower.isExistingLandingRunwayName(name);
+		QueueInterface<Plane> waitingPlanes = tower.getAllPlanesWaitingForRunway(name);
 		QueueInterface<Plane> planes = tower.closeRunway(name);
 		try {
 			for(int nullCount = 0; nullCount < 2;)

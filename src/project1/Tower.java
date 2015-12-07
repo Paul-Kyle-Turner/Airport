@@ -158,7 +158,14 @@ public class Tower implements TowerInterface{
 		Runway runway = runways.get(index);
 		runways.remove(index);
 		QueueInterface<Plane> planes = runway.removeAllPlanesFromQueue();
-		planes.enqueue(null);
+		return planes;
+	}
+	
+	public QueueInterface<Plane> getAllPlanesWaitingForRunway(String name)
+	{
+		QueueInterface<Plane> planes = new ABQueue<Plane>();
+		int index = findRunway(name);
+		Runway runway = runways.get(index);
 		for(int i = 0; i < waiting.size(); i++)
 		{
 			Plane curr = waiting.get(i);
