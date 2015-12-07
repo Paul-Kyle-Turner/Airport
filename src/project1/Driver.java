@@ -295,7 +295,10 @@ public class Driver {
 			}
 			else if(answer.equals("N") || answer.equals("NO")){
 				tower.addExistingPlaneIntoWaiting(plane);
-				System.out.println(plane.toString() + " is now waiting to re-enter runway " + plane.getRunway().getName());
+				if(isLanding)
+					System.out.println(plane.toString() + " is now waiting for clearance to land on runway " + plane.getRunway().getName());
+				else
+					System.out.println(plane.toString() + " is now waiting to re-enter runway " + plane.getRunway().getName());
 				unrecognized = false;
 			}
 		}while(unrecognized);
