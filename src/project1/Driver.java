@@ -203,6 +203,11 @@ public class Driver {
 					plane = planes.dequeue();
 				}catch(QueueException e){
 					waitingQueue = true;
+					try{
+						plane = waitingPlanes.dequeue();
+					}catch(QueueException ex){
+						occuringPlanes = false;
+					}
 				}
 			}
 			else{
