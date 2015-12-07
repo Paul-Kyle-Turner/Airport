@@ -29,7 +29,7 @@ public class Plane extends KeyedItem<String> {
 
 	@Override
 	public String toString() {
-		return "Flight "  + getKey() + " to "  + destination + ".\n";
+		return "Flight "  + getKey() + " to "  + destination;
 	}
 	
 	
