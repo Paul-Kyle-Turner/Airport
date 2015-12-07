@@ -296,6 +296,10 @@ public class Tower implements TowerInterface{
 		}
 	}
 
+	/**
+	 * 
+	 * @see project1.TowerInterface#getPlaneBasedOnFlightNumber(java.lang.String)
+	 */
 	@Override
 	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
@@ -308,17 +312,9 @@ public class Tower implements TowerInterface{
 		else
 			return null;
 	}
-
-	@Override
-	public Runway getRunway(String name) {
-		// TODO Auto-generated method stub
-		int index = findRunway(name);
-		if(index != 1)
-			return runways.get(index);
-		else
-			return null;
-	}
-
+	/**
+	 * Returns formatted info regarding all of the planes waiting to reenter a runway
+	 */
 	@Override
 	public String displayInfoPlanesReenter() {
 		// TODO Auto-generated method stub
@@ -331,7 +327,7 @@ public class Tower implements TowerInterface{
 	}
 
 	/**
-	 * Returns formatted infor regarding all of the runways and the planes contained within them
+	 * Returns formatted info regarding all of the runways and the planes contained within them
 	 * @return the String
 	 */
 	@Override
