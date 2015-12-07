@@ -39,7 +39,7 @@ public class Driver {
 				} catch (IOException e) {
 					System.out.println("Something broke in startingRunways");
 				}
-			}while(!tower.isExsistingRunwayName(name));
+			}while(!tower.isExistingRunwayName(name));
 			tower.createNewRunway(name, false);;
 		}
 	}
@@ -125,7 +125,7 @@ public class Driver {
 	 * @throws IOException
 	 */
 	private static void runwayClose() throws IOException {
-		if(!tower.hasMultipleOpenRuwnays()){
+		if(!tower.hasMultipleOpenRunways()){
 			System.out.println("The government requires at least one open runway.");
 			return;
 		}
