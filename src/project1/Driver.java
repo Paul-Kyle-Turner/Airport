@@ -183,6 +183,11 @@ public class Driver {
 		tower.createNewRunway(name , landing);
 	}
 
+	/**
+	 * plane reenteting the ruwnay after being on the waiting list
+	 * asks for the plane then places it on the ruwnay that it was on
+	 * @throws IOException
+	 */
 	private static void planeReEnters() throws IOException {
 		if(tower.hasNoReenteringPlanes()){
 			System.out.println("No planes waiting to re-enter.");
@@ -203,6 +208,10 @@ public class Driver {
 		}while(stop);
 	}
 
+	/**
+	 * 
+	 * @throws IOException
+	 */
 	private static void planeLeavesTheSystem() throws IOException {
 		if(!tower.hasPlanesOnRunways()){
 			System.out.println("There are no planes on runways for takeoff.");
@@ -240,7 +249,7 @@ public class Driver {
 		{
 			System.out.println("Please enter valid runway name : ");
 			runwayName = stdin.readLine().trim();
-		}while(tower.isExistingRunwayName(runwayName));
+		}while(!tower.isExistingRunwayName(runwayName));
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 
