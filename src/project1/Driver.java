@@ -120,7 +120,7 @@ public class Driver {
 			displayInfoAboutPlanesWaitingToReEnter();
 			break;
 		case 8 :
-			System.out.println("The number of planes that have taken off is " + numberOfPlanesLeft);
+			System.out.println("The number of planes that have taken-off/landed is " + numberOfPlanesLeft);
 			break;
 		case 9 :
 			programEnd = false;
@@ -155,7 +155,7 @@ public class Driver {
 	 */
 	private static void runwayClose() throws IOException {
 		
-		System.out.print("Would you like to remove a landing runway or a takeoff runway? ");
+		System.out.print("Would you like to remove a landing runway (Y) or a takeoff runway (N)? ");
 		boolean unrecognized = true;
 		boolean isLanding = false;
 		do {
@@ -170,11 +170,11 @@ public class Driver {
 		}while(unrecognized);
 		
 		if(isLanding && !tower.hasMultipleLandingRunways()){
-			System.out.println("The government requires at least one open landing runway.");
+			System.out.println("The government requires at least one open landing runway.\n");
 			return;
 		}
 		else if(!isLanding && !tower.hasMultipleTakeoffRunways()){
-			System.out.println("The government requires at least one open takeoff runway.");
+			System.out.println("The government requires at least one open takeoff runway.\n");
 			return;
 		}
 
@@ -183,12 +183,12 @@ public class Driver {
 		while(stop){
 			System.out.println("Enter runway:");
 			name = stdin.readLine().trim();
-			if(isLanding && tower.isExistingLandingRunwayName(name))
-				stop =false;
-			else if(!isLanding && tower.isExistingTakeoffRunwayName(name))
-				stop = false;
+			if(isLanding && !tower.isExistingLandingRunwayName(name))
+				System.out.println("There is no such landing runway!");
+			else if(!isLanding && !tower.isExistingTakeoffRunwayName(name))
+				System.out.println("There is no such takeoff runway!");
 			else{
-				System.out.println("No such runway!");
+				stop = false;
 			}
 		}
 		QueueInterface<Plane> waitingPlanes = tower.getAllPlanesWaitingForRunway(name);
@@ -221,14 +221,17 @@ public class Driver {
 			String runway = null;
 			while(halt && occuringPlanes)
 			{
-				System.out.println("Enter a runway for flight " + plane.toString());
+				System.out.println("Enter a runway for " + plane.toString());
 				runway = stdin.readLine().trim();
 				System.out.println(runway);
 				if(name.equals(runway)){
 					System.out.println("This is the runway that is closing.");
 				}
-				else if((isLanding && !tower.isExistingLandingRunwayName(runway)) || (!isLanding && !tower.isExistingTakeoffRunwayName(runway))){
-					System.out.println("This is not a valid runway!");
+				else if(isLanding && !tower.isExistingLandingRunwayName(runway)){
+					System.out.println("This is not an existing landing runway!");
+				}
+				else if(!isLanding && !tower.isExistingTakeoffRunwayName(runway)){
+					System.out.println("This is not an existing take-off runway!");
 				}
 				else{
 					if(!waitingQueue)
@@ -292,7 +295,11 @@ public class Driver {
 			flightNumber = stdin.readLine().trim();
 			if(tower.isExistingReenterFlightNumber(flightNumber)){
 				Plane plane = tower.getPlaneBasedOnFlightNumber(flightNumber);
-				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
+				Runway runway = plane.getRunway();
+				if(runway.isLanding())
+					System.out.println("Flight " + flightNumber + " is now waiting for clearance to land on runway " + runway.getName());
+				else
+					System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + runway.getName());
 				stop = false;
 				tower.reenterPlaneIntoRunway(plane);
 			}
@@ -308,7 +315,7 @@ public class Driver {
 	 */
 	private static void planeLeavesTheSystem() throws IOException {
 		if(!tower.hasPlanesOnRunways()){
-			System.out.println("There are no planes on runways for takeoff.");
+			System.out.println("There are no planes waiting for takeoff/landing.");
 			return;
 		}
 		boolean unrecognized = true;
@@ -408,7 +415,7 @@ public class Driver {
 				+ "5.Runway Closes.\n"
 				+ "6.Display info about planes waiting to take off.\n"
 				+ "7.Display info about planes waiting to be allowed to re-enter a runway.\n"
-				+ "8.Display number of planes who have taken off.\n"
+				+ "8.Display number of planes who have taken off/landed.\n"
 				+ "9.End the program.");
 	}
 }

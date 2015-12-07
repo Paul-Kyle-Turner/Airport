@@ -330,6 +330,10 @@ public class Tower implements TowerInterface{
 			return "There are no planes waiting for re-entry";
 	}
 
+	/**
+	 * Returns formatted infor regarding all of the runways and the planes contained within them
+	 * @return the String
+	 */
 	@Override
 	public String displayInfoPlanesString() {
 		// TODO Auto-generated method stub
