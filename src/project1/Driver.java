@@ -275,19 +275,23 @@ public class Driver {
 		}
 		boolean unrecognized = true;
 		Plane plane = tower.getNextReadyFlight();
+		boolean isLanding = plane.getRunway().isLanding();
 		System.out.println(plane.toString());
 		System.out.println("Please specifiy if the plane has clearance to take off. Y/N");
 		String answer = stdin.readLine().trim().toUpperCase();
 		do {
 			if(answer.equals("Y") || answer.equals("YES")){
 				tower.planeTakesOff(plane);
-				System.out.println("Flight " + plane.toString() + " has taken off from runway " + plane.getRunway().getName());
+				if(isLanding)
+					System.out.println(plane.toString() + " has landed on runway " + plane.getRunway().getName());
+				else
+					System.out.println(plane.toString() + " has taken off from runway " + plane.getRunway().getName());
 				unrecognized = false;
 				numberOfPlanesLeft++;
 			}
 			else if(answer.equals("N") || answer.equals("NO")){
 				tower.addExistingPlaneIntoWaiting(plane);
-				System.out.println("Flight " + plane.toString() + " is now waiting to re-enter runway " + plane.getRunway().getName());
+				System.out.println(plane.toString() + " is now waiting to re-enter runway " + plane.getRunway().getName());
 				unrecognized = false;
 			}
 		}while(unrecognized);
@@ -305,12 +309,12 @@ public class Driver {
 			System.out.print("Please enter valid flight number : ");
 			flightNumber = stdin.readLine().trim();
 		}while(tower.isExistingFlightNumber(flightNumber));
-		System.out.print("Is the flight landing (N) or taking-off(Y): ");
+		System.out.print("Is the flight landing?: ");
 		String answer = stdin.readLine().trim().toUpperCase();
 		boolean unrecognized = true;
 		String destination = "";
 		do {
-			if(answer.equals("Y") || answer.equals("YES")){
+			if(answer.equals("N") || answer.equals("NO")){
 				System.out.println("Please enter destination.");
 				destination = stdin.readLine().trim();
 				do
@@ -320,7 +324,7 @@ public class Driver {
 				}while(!tower.isExistingTakeoffRunwayName(runwayName));
 				unrecognized = false;
 			}
-			else if(answer.equals("N") || answer.equals("NO")){
+			else if(answer.equals("Y") || answer.equals("YES")){
 				do
 				{
 					System.out.println("Please enter valid landing runway name : ");
