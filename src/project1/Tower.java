@@ -135,6 +135,13 @@ public class Tower implements TowerInterface{
 					return -1;
 	}
 
+	/**
+	 * Adds a new plane to the system with the given flightNumber (must be checked by the isExistingFlightNumber method, should not exist already),
+	 * destination, and runwayName (must be checked by isExistingRunwayName, should exist already)
+	 * @param flightNumber The flightNumber of the plane (checked against isExistingFlightNumber)
+	 * @param destination The destination value for the new plane
+	 * @param runwayName The name of the runway this plane will be added to (checked by isExistingRunwayName)
+	 */
 	@Override
 	public void addPlaneToSystem(String flightNumber, String destination,
 			String runwayName) {
@@ -266,16 +273,28 @@ public class Tower implements TowerInterface{
 				return false;
 	}
 
+	/**
+	 * @return true if there are planes waiting for re-entry, false if not
+	 */
 	@Override
 	public boolean hasNoReenteringPlanes() {
 		return waiting.isEmpty();
 	}
 
+	/**
+	 * Creates a new runway with the given name and landing specification at the end of the runway list
+	 * @param name The name of the new runway
+	 * @param landing Whether or not this runway is a landing runway
+	 */
 	@Override
 	public void createNewRunway(String name, boolean landing) {
 		runways.add(runways.size(), new Runway(name, landing));
 	}
 
+	/**
+	 * Adds a given plane from the waiting list into its target runway, and removes it from the waiting list if found
+	 * @param plane The plane to re-enter into its target runway
+	 */
 	@Override
 	public void reenterPlaneIntoRunway(Plane plane) {
 		plane.getRunway().addPlaneToBack(plane);
@@ -295,6 +314,11 @@ public class Tower implements TowerInterface{
 		}
 	}
 	
+	/**
+	 * sets the given plane's runway target to a runway with the given name
+	 * @param plane The plane to set its runway target
+	 * @param name The name of the runway to set the plane's runway to
+	 */
 	public void setPlaneReenterTarget(Plane plane, String name)
 	{
 		int index = findRunway(name);
@@ -302,6 +326,11 @@ public class Tower implements TowerInterface{
 			plane.setRunway(runways.get(index));
 	}
 
+	/**
+	 * adds a plane currently in the system (checked with validation method) to a runway in the system
+	 * @param plane The plane to add to a runway
+	 * @param name The name of the runway to add the plane to
+	 */
 	@Override
 	public void addPlaneToRunway(Plane plane, String name) {
 
@@ -314,17 +343,27 @@ public class Tower implements TowerInterface{
 		}
 	}
 
+	/**
+	 * Get a plane based on its flightNumber
+	 * @param flightNumber The flightNumber to search for
+	 * @return the plane with the given flightNumber, null if notFound
+	 * @see project1.TowerInterface#getPlaneBasedOnFlightNumber(java.lang.String)
+	 */
 	@Override
 	public Plane getPlaneBasedOnFlightNumber(String flightNumber) {
 		if(!planes.isEmpty())
 		{
 			Plane plane = planes.get(planes.search(flightNumber));
 			return plane.getKey().equals(flightNumber) ? plane : null;
-			
 		}
 		else
 			return null;
 	}
+<<<<<<< HEAD
+	/**
+	 * Returns formatted info regarding all of the planes waiting to reenter a runway
+	 */
+=======
 
 	@Override
 	public Runway getRunway(String name) {
@@ -335,6 +374,7 @@ public class Tower implements TowerInterface{
 			return null;
 	}
 
+>>>>>>> master
 	@Override
 	public String displayInfoPlanesReenter() {
 		if(waiting.size() > 0)
@@ -346,7 +386,7 @@ public class Tower implements TowerInterface{
 	}
 
 	/**
-	 * Returns formatted infor regarding all of the runways and the planes contained within them
+	 * Returns formatted info regarding all of the runways and the planes contained within them
 	 * @return the String
 	 */
 	@Override

@@ -17,7 +17,7 @@ public interface TowerInterface {
 	public void reenterPlaneIntoRunway(Plane plane);//adds a plane that is specified to a certain runway
 	public void addPlaneToRunway(Plane plane,String name);//adds a plane that is specified to a certain runway
 	public Plane getPlaneBasedOnFlightNumber(String flightNumber);//gets a plane based on the flight number
-	public Runway getRunway(String name);//returns a runway based on name
+	//public Runway getRunway(String name);//returns a runway based on name
 	public String displayInfoPlanesReenter();
 	public String displayInfoPlanesString();
 }
