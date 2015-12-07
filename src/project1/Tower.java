@@ -2,6 +2,35 @@ package project1;
 
 public class Tower implements TowerInterface{
 
+	private class PlaneValidation extends ValidationKey {
+		private Plane plane;
+		public PlaneValidation(boolean isValid, Plane plane)
+		{
+			this.isValid = isValid;
+			this.plane = plane;
+		}
+		
+		public Plane getPlane()
+		{
+			return plane;
+		}
+	}
+	
+	private class RunwayValidation extends ValidationKey {
+		private Runway runway;
+		public RunwayValidation(boolean isValid, Runway runway)
+		{
+			this.isValid = isValid;
+			this.runway = runway;
+		}
+		
+		public Runway getRunway()
+		{
+			return runway;
+		}
+	}
+	
+	
 	private AscendinglyOrderedListADT<Plane, String> planes;
 	private ListInterface<Plane> waiting;
 	private ListInterface<Runway> runways;
@@ -18,12 +47,44 @@ public class Tower implements TowerInterface{
 	@Override
 	public boolean isExistingRunwayName(String name) {
 		// TODO Auto-generated method stub
-		if(findRunway(name) == -1)
+		int index = findRunway(name);
+		if(index == -1)	
 		{
 			return false;
 		}
 		else
 			return true;
+	}
+	
+	public Runway retrieveRunway(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1)
+			return runways.get(index);
+		else
+			return null;
+	}
+	
+	public boolean isExistingLandingRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding() == true)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public boolean isExistingTakeoffRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding() == false)
+		{
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	protected int findRunway(String name)
@@ -58,13 +119,7 @@ public class Tower implements TowerInterface{
 	
 	public boolean hasMultipleOpenRunways()
 	{
-		int numOpenRunways = 0;
-		for(int i = 0; i < runways.size() && numOpenRunways < 2; i++)
-		{
-			if(!runways.get(i).isOpen())
-				numOpenRunways++;
-		}
-		return numOpenRunways >= 2;
+		return runways.size() > 1;
 	}
 	
 	
@@ -107,16 +162,29 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public void reenterPlaneIntoSystem(Plane plane) {
+	public void addExistingPlaneIntoWaiting(Plane plane) {
 		// TODO Auto-generated method stub
 		waiting.add(waiting.size(), plane);
 	}
-	
-	public Plane[] closeRunway(String name)
+	/**
+	 * Returns a queue of the planes waiting for the runway, then a null, then the planes waiting to reenter the runway
+	 * @param name The name of the runway
+	 * @return
+	 */
+	public QueueInterface<Plane> closeRunway(String name)
 	{
-		Runway runway = runways.get(findRunway(name));
-		runway.setOpen(false);
-		return runway.removeAllPlanesFromQueue();
+		int index = findRunway(name);
+		Runway runway = runways.get(index);
+		runways.remove(index);
+		QueueInterface<Plane> planes = runway.removeAllPlanesFromQueue();
+		planes.enqueue(null);
+		for(int i = 0; i < waiting.size(); i++)
+		{
+			Plane curr = waiting.get(i);
+			if(curr.getRunway() == runway)
+				planes.enqueue(curr);
+		}
+		return planes;
 	}
 
 	@Override
@@ -161,7 +229,7 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public void addPlaneToRunway(Plane plane) {
+	public void reenterPlaneIntoRunway(Plane plane) {
 		// TODO Auto-generated method stub
 		plane.getRunway().addPlaneToBack(plane);
 		boolean found = false;
@@ -187,8 +255,8 @@ public class Tower implements TowerInterface{
 		if(index != 1)
 		{
 			Runway runway = runways.get(index);
-			runway.addPlaneToBack(plane);
 			plane.setRunway(runway);
+			runway.addPlaneToBack(plane);
 		}
 	}
 
@@ -218,13 +286,23 @@ public class Tower implements TowerInterface{
 	@Override
 	public String displayInfoPlanesReenter() {
 		// TODO Auto-generated method stub
-		return waiting.toString();
+		if(waiting.size() > 0)
+		{
+			return "The following flights are waiting for re-entry: \n" + waiting.toString();
+		}
+		else
+			return "There are no planes waiting for re-entry";
 	}
 
 	@Override
 	public String displayInfoPlanesString() {
 		// TODO Auto-generated method stub
-		return runways.toString();
+		if(runways.size() > 0)
+		{
+			return runways.toString();
+		}
+		else
+			return "There are no runways";
 	}
 
 }
