@@ -226,6 +226,7 @@ public class Driver {
 			if(answer.equals("Y") || answer.equals("YES")){
 				tower.planeTakesOff(plane);
 				unrecognized = false;
+				numberOfPlanesLeft++;
 			}
 			else if(answer.equals("N") || answer.equals("NO")){
 				tower.reenterPlaneIntoSystem(plane);
