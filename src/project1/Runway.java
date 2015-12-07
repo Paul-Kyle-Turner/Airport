@@ -2,8 +2,8 @@ package project1;
 
 public class Runway {
 
-	private ListArrayBasedPlus<Plane> planeQueue;//Rewritten CDLS to be generic
-	private boolean landing, open;
+	private QueueInterface<Plane> planeQueue;//Rewritten CDLS to be generic
+	private boolean landing;
 	private String name;
 
 	/**
@@ -13,12 +13,11 @@ public class Runway {
 	{
 		name = null;
 		landing = false;//Not landing
-		open = true;//open
 
 		//open = false;//Not open
 
 
-		planeQueue = new ListArrayBasedPlus<Plane>();
+		planeQueue = new ABQueue<Plane>();
 		this.name = name;
 	}//end Default
 
@@ -27,30 +26,20 @@ public class Runway {
 	 * @param landing
 	 * @param open
 	 */
-
 	public Runway(String name, boolean landing)
 	{
 		this.name = name;
 		this.landing = landing;
-		this.open = true;
-		planeQueue = new ListArrayBasedPlus<Plane>();
+		planeQueue = new ABQueue<Plane>();
 		this.name = name;
 	}//end constructor 
-	
-	/**
-	 * Adds a plane to the front of the queue
-	 * @param plane
-	 */
-	public void addPlaneToFront(Plane plane){
-		planeQueue.add(0, plane);
-	}//end addFront
 	
 	/**
 	 * Adds a plane to the back of the queue
 	 * @param plane
 	 */
 	public void addPlaneToBack(Plane plane){
-		planeQueue.add(planeQueue.size(), plane);
+		planeQueue.enqueue(plane);
 	}//end plane to queue
 	
 	/**
@@ -60,56 +49,26 @@ public class Runway {
 	 */
 	public Plane removePlaneFromFront(){
 		try{
-			Plane temp = planeQueue.get(0);
-			planeQueue.remove(0);
-			return temp;
-		}catch(ListIndexOutOfBoundsException e){
+			return planeQueue.dequeue();
+		}catch(QueueException e){
 			return null;
 		}
 	}//end remove from front
 	
 	/**
-	 * removes the plane from the back of the queue
-	 * if catches a list index out of bounds, returns a null
-	 * @return
-	 */
-	public Plane removePlaneFromBack(){
-		try{
-			Plane temp = planeQueue.get(planeQueue.size()-1);
-			planeQueue.remove(planeQueue.size()-1);
-			return temp;
-		}catch(ListIndexOutOfBoundsException e){
-			return null;
-		}
-	}//end removePlaneFromBack
-	
-	/**
-	 * searches for the correct item in this list via sequential search
-	
-	  * possible change in this codes implementation
-	 * @param key
-	 * @return
-	 */
-	public Plane findAndRemovePlaneFromQueue(String key){
-		Plane temp = null;
-		for(int i = 0; i < planeQueue.size()-1;i++){
-			if(planeQueue.get(i).getKey().equals(key)){
-				temp = planeQueue.get(i);
-				planeQueue.remove(i);
-			}
-		}
-		return temp;
-	}//end findAndRemovePlaneFromQueue
-	
-	/**
 	 * removes all items from the queue
 	 */
-	public Plane[] removeAllPlanesFromQueue(){
-		Plane[] planes = new Plane[planeQueue.numItems];
-		for(int i = 0; i < planeQueue.numItems;i++){
-			planes[i] = planeQueue.get(i);
+	public QueueInterface<Plane> removeAllPlanesFromQueue(){
+		QueueInterface<Plane> planes = new ABQueue<Plane>();
+		try {
+			while(planeQueue.peek() != null)
+			{
+				planes.enqueue(planeQueue.dequeue());
+			}
+		} catch (QueueException e)
+		{
+			//we are done now
 		}
-		planeQueue.removeAll();
 		return planes;
 	}//end removeAllPlanesFromQueue
 
@@ -130,27 +89,13 @@ public class Runway {
 	}
 
 	/**
-	 * returns if the runway is open or not
-	 * @return
+	 * 
+	 * @return The name of the runway
 	 */
-	public boolean isOpen() {
-		return open;
-	}
-
-
 	public String getName()
 	{
 		return name;
 	}
-
-	/**
-	 * returns if the set is open
-	 * @param open
-	 */
-	public void setOpen(boolean open) {
-		this.open = open;
-	}
-
 	/**
 	 * allows you to reset the name of the runway
 	 * @param name
@@ -159,13 +104,31 @@ public class Runway {
 		this.name = name;
 	}
 
+	/**
+	 * Returns this runway as a String
+	 * @return A header of what is happening on this runway, and the planes waiting on it
+	 */
 	@Override
 	public String toString() {
-		String value = "These planes are waiting for takeoff on runway " + name + "\n";
-		for(int i = 0; i < planeQueue.numItems;i++){
-			value += planeQueue.get(i).toString();
+		if(planeQueue.isEmpty())
+		{
+			if(landing)
+				return "No planes waiting to land on runway " + name;
+			else
+				return "No planes waiting for takeoff on runway " + name;
 		}
-		return value;
+		else if(landing)
+		{
+			String value = "These planes are waiting to land on runway " + name + "\n";
+			value += planeQueue;
+			return value;
+		}
+		else
+		{
+			String value = "These planes are waiting for takeoff on runway " + name + "\n";
+			value += planeQueue;
+			return value;
+		}
 	}
 	
 	/**

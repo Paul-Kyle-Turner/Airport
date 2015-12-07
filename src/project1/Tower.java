@@ -1,7 +1,8 @@
 package project1;
 
 public class Tower implements TowerInterface{
-
+	
+	
 	private AscendinglyOrderedListADT<Plane, String> planes;
 	private ListInterface<Plane> waiting;
 	private ListInterface<Runway> runways;
@@ -18,12 +19,74 @@ public class Tower implements TowerInterface{
 	@Override
 	public boolean isExistingRunwayName(String name) {
 		// TODO Auto-generated method stub
-		if(findRunway(name) == -1)
+		int index = findRunway(name);
+		if(index == -1)	
 		{
 			return false;
 		}
 		else
 			return true;
+	}
+	
+	public boolean isLandingRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding())
+			return true;
+		else
+			return false;
+	}
+	
+	public Runway retrieveRunway(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1)
+			return runways.get(index);
+		else
+			return null;
+	}
+
+	public boolean hasMultipleLandingRunways()
+	{
+		return getNumberOfLandingRunways() > 1;
+	}
+	
+	public boolean hasMultipleTakeoffRunways()
+	{
+		return (runways.size() - getNumberOfLandingRunways()) > 1;
+	}
+	
+	protected int getNumberOfLandingRunways()
+	{
+		int numLanding = 0;
+		for(int i = 0; i < runways.size(); i++)
+		{
+			if(runways.get(i).isLanding())
+				numLanding++;
+		}
+		return numLanding;
+	}
+	
+	public boolean isExistingLandingRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding() == true)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public boolean isExistingTakeoffRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding() == false)
+		{
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	protected int findRunway(String name)
@@ -56,18 +119,10 @@ public class Tower implements TowerInterface{
 		
 	}
 	
-	public boolean hasMultipleOpenRunways()
-	{
-		int numOpenRunways = 0;
-		for(int i = 0; i < runways.size() && numOpenRunways < 2; i++)
-		{
-			if(!runways.get(i).isOpen())
-				numOpenRunways++;
-		}
-		return numOpenRunways >= 2;
-	}
-	
-	
+	/**
+	 * Says whether or not the tower sees any planes on the runways
+	 * @return true if there are planes, false if there are not
+	 */
 	public boolean hasPlanesOnRunways()
 	{
 		boolean hasPlanes = false;
@@ -98,6 +153,10 @@ public class Tower implements TowerInterface{
 			return runways.get(currentRunway).removePlaneFromFront();
 	}
 
+	/**
+	 * Removes a plane from the system, as it took off/landed
+	 * @param departure The plane that took off
+	 */
 	@Override
 	public void planeTakesOff(Plane departure) {
 		// TODO Auto-generated method stub
@@ -106,19 +165,53 @@ public class Tower implements TowerInterface{
 			planes.remove(index);
 	}
 
+	/**
+	 * Adds an existing plane to the waiting pool
+	 * @param plane The plane that is now waiting for reentry
+	 */
 	@Override
-	public void reenterPlaneIntoSystem(Plane plane) {
+	public void addExistingPlaneIntoWaiting(Plane plane) {
 		// TODO Auto-generated method stub
 		waiting.add(waiting.size(), plane);
 	}
-	
-	public Plane[] closeRunway(String name)
+	/**
+	 * Returns a queue of the planes waiting for the runway, then a null, then the planes waiting to reenter the runway
+	 * @param name The name of the runway
+	 * @return
+	 */
+	public QueueInterface<Plane> closeRunway(String name)
 	{
-		Runway runway = runways.get(findRunway(name));
-		runway.setOpen(false);
-		return runway.removeAllPlanesFromQueue();
+		int index = findRunway(name);
+		Runway runway = runways.get(index);
+		runways.remove(index);
+		QueueInterface<Plane> planes = runway.removeAllPlanesFromQueue();
+		return planes;
+	}
+	
+	/**
+	 * Returns all planes waiting for a runway with the specified name
+	 * @param name The name of an existing runway, validated using the isExistingRunwayName method
+	 * @return The Queue containing all planes that are waiting for a runway
+	 */
+	public QueueInterface<Plane> getAllPlanesWaitingForRunway(String name)
+	{
+		QueueInterface<Plane> planes = new ABQueue<Plane>();
+		int index = findRunway(name);
+		Runway runway = runways.get(index);
+		for(int i = 0; i < waiting.size(); i++)
+		{
+			Plane curr = waiting.get(i);
+			if(curr.getRunway() == runway)
+				planes.enqueue(curr);
+		}
+		return planes;
 	}
 
+	/**
+	 * Checks if a given flightNumber is the flightNumber of a plane in the system waiting for reentry
+	 * @param flightNumber The flightNumber to check
+	 * @return true if the flightNumber exists, false if not
+	 */
 	@Override
 	public boolean isExistingReenterFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
@@ -137,6 +230,10 @@ public class Tower implements TowerInterface{
 			return false;
 	}
 
+	/**
+	 * Checks if a given flightNumber matches any plane in the system, waiting or not
+	 * @param flightNumber
+	 */
 	@Override
 	public boolean isExistingFlightNumber(String flightNumber) {
 		// TODO Auto-generated method stub
@@ -161,7 +258,7 @@ public class Tower implements TowerInterface{
 	}
 
 	@Override
-	public void addPlaneToRunway(Plane plane) {
+	public void reenterPlaneIntoRunway(Plane plane) {
 		// TODO Auto-generated method stub
 		plane.getRunway().addPlaneToBack(plane);
 		boolean found = false;
@@ -179,6 +276,13 @@ public class Tower implements TowerInterface{
 			}
 		}
 	}
+	
+	public void setPlaneReenterTarget(Plane plane, String name)
+	{
+		int index = findRunway(name);
+		if(index != -1)
+			plane.setRunway(runways.get(index));
+	}
 
 	@Override
 	public void addPlaneToRunway(Plane plane, String name) {
@@ -187,8 +291,8 @@ public class Tower implements TowerInterface{
 		if(index != 1)
 		{
 			Runway runway = runways.get(index);
-			runway.addPlaneToBack(plane);
 			plane.setRunway(runway);
+			runway.addPlaneToBack(plane);
 		}
 	}
 
@@ -218,13 +322,23 @@ public class Tower implements TowerInterface{
 	@Override
 	public String displayInfoPlanesReenter() {
 		// TODO Auto-generated method stub
-		return waiting.toString();
+		if(waiting.size() > 0)
+		{
+			return "The following flights are waiting for re-entry: \n" + waiting.toString();
+		}
+		else
+			return "There are no planes waiting for re-entry";
 	}
 
 	@Override
 	public String displayInfoPlanesString() {
 		// TODO Auto-generated method stub
-		return runways.toString();
+		if(runways.size() > 0)
+		{
+			return runways.toString();
+		}
+		else
+			return "There are no runways";
 	}
 
 }

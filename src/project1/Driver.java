@@ -29,18 +29,47 @@ public class Driver {
 	 * Asks for number of runways then asks for the names of each runway
 	 */
 	static void startingRunways() {
-		int value = getIndex("Number of starting runways");
-		for(int i = 0; i < value; i++){
+		int numRunways = 0;
+		boolean validNumRunways = false;
+		do {
+			numRunways = getIndex("Number of starting takeoff runways");
+			if(numRunways > 0)
+				validNumRunways = true;
+			else
+				System.out.println("There must be at least one takeoff runway!");
+		}while(!validNumRunways);
+		for(int i = 0; i < numRunways; i++){
 			String name = null;
 			do{
-				System.out.println("Please enter name of runway.");
+				System.out.println("Please enter name of takeoff runway: ");
 				try {
 					name = stdin.readLine().trim();
 				} catch (IOException e) {
 					System.out.println("Something broke in startingRunways");
 				}
 			}while(tower.isExistingRunwayName(name));
-			tower.createNewRunway(name, false);;
+			tower.createNewRunway(name, false);
+		}
+		numRunways = 0;
+		validNumRunways = false;
+		do {
+			numRunways = getIndex("Number of starting landing runways");
+			if(numRunways > 0)
+				validNumRunways = true;
+			else
+				System.out.println("There must be at least one landing runway!");
+		}while(!validNumRunways);
+		for(int i = 0; i < numRunways; i++){
+			String name = null;
+			do{
+				System.out.println("Please enter name of landing runway: ");
+				try {
+					name = stdin.readLine().trim();
+				} catch (IOException e) {
+					System.out.println("Something broke in startingRunways");
+				}
+			}while(tower.isExistingRunwayName(name));
+			tower.createNewRunway(name, true);
 		}
 	}
 
@@ -125,44 +154,107 @@ public class Driver {
 	 * @throws IOException
 	 */
 	private static void runwayClose() throws IOException {
-		if(!tower.hasMultipleOpenRunways()){
-			System.out.println("The government requires at least one open runway.");
+		
+		System.out.print("Would you like to remove a landing runway or a takeoff runway? ");
+		boolean unrecognized = true;
+		boolean isLanding = false;
+		do {
+			String answer = stdin.readLine().trim().toUpperCase();
+			if(answer.equals("Y") || answer.equals("YES")){
+				isLanding = true;
+				unrecognized = false;
+			}
+			else if(answer.equals("N") || answer.equals("NO")){
+				unrecognized = false;
+			}
+		}while(unrecognized);
+		
+		if(isLanding && !tower.hasMultipleLandingRunways()){
+			System.out.println("The government requires at least one open landing runway.");
 			return;
 		}
+		else if(!isLanding && !tower.hasMultipleTakeoffRunways()){
+			System.out.println("The government requires at least one open takeoff runway.");
+			return;
+		}
+
 		String name = "";
 		boolean stop = true;
 		while(stop){
 			System.out.println("Enter runway:");
-			name = stdin.readLine();
-			if(!tower.isExistingRunwayName(name))
+			name = stdin.readLine().trim();
+			if(isLanding && tower.isExistingLandingRunwayName(name))
 				stop =false;
+			else if(!isLanding && tower.isExistingTakeoffRunwayName(name))
+				stop = false;
 			else{
 				System.out.println("No such runway!");
 			}
 		}
-		Plane[] planes = tower.closeRunway(name);
-		for(int i = 0;  i < planes.length-1; i++)
+		QueueInterface<Plane> waitingPlanes = tower.getAllPlanesWaitingForRunway(name);
+		QueueInterface<Plane> planes = tower.closeRunway(name);
+		boolean occuringPlanes = true;
+		boolean waitingQueue = false;
+		for(;occuringPlanes;)
 		{
+			Plane plane = null;
+			if(!waitingQueue){
+				try{
+					plane = planes.dequeue();
+				}catch(QueueException e){
+					waitingQueue = true;
+					try{
+						plane = waitingPlanes.dequeue();
+					}catch(QueueException ex){
+						occuringPlanes = false;
+					}
+				}
+			}
+			else{
+				try{
+					plane = waitingPlanes.dequeue();
+				}catch(QueueException e){
+					occuringPlanes = false;
+				}
+			}
 			boolean halt = true;
 			String runway = null;
-			while(halt)
+			while(halt && occuringPlanes)
 			{
-				System.out.println("Enter a runway for flight " + planes[i].toString());
+				System.out.println("Enter a runway for flight " + plane.toString());
 				runway = stdin.readLine().trim();
 				System.out.println(runway);
 				if(name.equals(runway)){
 					System.out.println("This is the runway that is closing.");
 				}
-				else if(!tower.isExistingRunwayName(runway)){
+				else if((isLanding && !tower.isExistingLandingRunwayName(runway)) || (!isLanding && !tower.isExistingTakeoffRunwayName(runway))){
 					System.out.println("This is not a valid runway!");
 				}
 				else{
-					System.out.println("Flight " + planes[i].toString() + " is being added to ruwnay " + runway);
-					tower.addPlaneToRunway(planes[i],runway);
+					if(!waitingQueue)
+					{
+						if(isLanding)
+							System.out.println(plane.toString() + " is waiting to land on runway " + runway);
+						else
+							System.out.println(plane.toString() + " is waiting for takeoff on runway " + runway);
+						tower.addPlaneToRunway(plane ,runway);
+					}
+					else
+					{
+						if(isLanding)
+							System.out.println(plane.toString() + " is waiting for clearance to land on runway " + runway);
+						else
+							System.out.println(plane.toString() + " is waiting to re-enter runway " + runway);
+						tower.setPlaneReenterTarget(plane, runway);
+					}
+					halt = false;
 				}
 			}
+
 		}
+		System.out.println("Runway " + name + " has been closed.");
 	}
+
 
 	/**
 	 * opens a new runway by asking for name
@@ -201,6 +293,8 @@ public class Driver {
 			if(tower.isExistingReenterFlightNumber(flightNumber)){
 				Plane plane = tower.getPlaneBasedOnFlightNumber(flightNumber);
 				System.out.println("Flight " + flightNumber + " is now waiting to takeoff on runway " + plane.getRunway().getName());
+				stop = false;
+				tower.reenterPlaneIntoRunway(plane);
 			}
 			else{
 				System.out.println("Flight " + flightNumber + " is not waiting for clearance.");
@@ -219,22 +313,29 @@ public class Driver {
 		}
 		boolean unrecognized = true;
 		Plane plane = tower.getNextReadyFlight();
+		boolean isLanding = plane.getRunway().isLanding();
 		System.out.println(plane.toString());
 		System.out.println("Please specifiy if the plane has clearance to take off. Y/N");
-		String answer = stdin.readLine().trim().toUpperCase();
 		do {
+			String answer = stdin.readLine().trim().toUpperCase();
 			if(answer.equals("Y") || answer.equals("YES")){
 				tower.planeTakesOff(plane);
+				if(isLanding)
+					System.out.println(plane.toString() + " has landed on runway " + plane.getRunway().getName());
+				else
+					System.out.println(plane.toString() + " has taken off from runway " + plane.getRunway().getName());
 				unrecognized = false;
 				numberOfPlanesLeft++;
 			}
 			else if(answer.equals("N") || answer.equals("NO")){
-				tower.reenterPlaneIntoSystem(plane);
-				System.out.println("Flight " + plane.toString() + " is now waiting to take off.");
+				tower.addExistingPlaneIntoWaiting(plane);
+				if(isLanding)
+					System.out.println(plane.toString() + " is now waiting for clearance to land on runway " + plane.getRunway().getName());
+				else
+					System.out.println(plane.toString() + " is now waiting to re-enter runway " + plane.getRunway().getName());
 				unrecognized = false;
 			}
 		}while(unrecognized);
-
 	}
 
 	/**
@@ -249,13 +350,32 @@ public class Driver {
 			System.out.print("Please enter valid flight number : ");
 			flightNumber = stdin.readLine().trim();
 		}while(tower.isExistingFlightNumber(flightNumber));
-		System.out.println("Please enter destination.");
-		String destination = stdin.readLine().trim();
-		do
-		{
-			System.out.println("Please enter valid runway name : ");
-			runwayName = stdin.readLine().trim();
-		}while(!tower.isExistingRunwayName(runwayName));
+		System.out.print("Is the flight landing?: ");
+		String answer = stdin.readLine().trim().toUpperCase();
+		boolean unrecognized = true;
+		String destination = "";
+		do {
+			if(answer.equals("N") || answer.equals("NO")){
+				System.out.println("Please enter destination.");
+				destination = stdin.readLine().trim();
+				do
+				{
+					System.out.println("Please enter valid takeoff runway name : ");
+					runwayName = stdin.readLine().trim();
+				}while(!tower.isExistingTakeoffRunwayName(runwayName));
+				unrecognized = false;
+			}
+			else if(answer.equals("Y") || answer.equals("YES")){
+				do
+				{
+					System.out.println("Please enter valid landing runway name : ");
+					runwayName = stdin.readLine().trim();
+					destination = "Airport";
+				}while(!tower.isExistingLandingRunwayName(runwayName));
+
+				unrecognized = false;
+			}
+		}while(unrecognized);
 		tower.addPlaneToSystem(flightNumber,destination,runwayName);
 	}
 
@@ -282,7 +402,7 @@ public class Driver {
 	 */
 	private static void displayMenu() {
 		System.out.println("1.Plane enters the system.\n"
-				+ "2.Plane takes off.\n"
+				+ "2.Plane takes-off/lands.\n"
 				+ "3.Plane is allowed to re-enter a runway.\n"
 				+ "4.Runway Opens.\n"
 				+ "5.Runway Closes.\n"
