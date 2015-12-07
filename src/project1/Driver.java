@@ -173,49 +173,52 @@ public class Driver {
 		boolean isLandingRunway = tower.isExistingLandingRunwayName(name);
 		QueueInterface<Plane> waitingPlanes = tower.getAllPlanesWaitingForRunway(name);
 		QueueInterface<Plane> planes = tower.closeRunway(name);
-		try {
-			for(int nullCount = 0; nullCount < 2;)
-			{
-				boolean waitingPlanes = false;
-				Plane plane = planes.dequeue();
-				if(plane == null)
-				{
+		boolean occuringPlanes = true;
+		boolean waitingQueue = false;
+		for(;occuringPlanes;)
+		{
+			Plane plane = null;
+			if(!waitingQueue){
+				try{
 					plane = planes.dequeue();
-					waitingPlanes = true;
-					nullCount++;
-				}
-				else{
-					boolean halt = true;
-					String runway = null;
-					while(halt)
-					{
-						System.out.println("Enter a runway for flight " + plane.toString());
-						runway = stdin.readLine().trim();
-						System.out.println(runway);
-						if(name.equals(runway)){
-							System.out.println("This is the runway that is closing.");
-						}
-						else if(!tower.isExistingRunwayName(runway)){
-							System.out.println("This is not a valid runway!");
-						}
-						else{
-							if(waitingPlanes)
-							{
-								System.out.println(plane.toString() + " is waiting for takeoff on runway " + runway);
-								tower.addPlaneToRunway(plane ,runway);
-							}
-							else
-							{
-								System.out.println(plane.toString() + " is waiting to re-enter runway " + runway);
-								tower.setPlaneReenterTarget(plane, runway);
-							}
-							halt = false;
-						}
-					}
+				}catch(QueueException e){
+					waitingQueue = true;
 				}
 			}
-		} catch(QueueException e)
-		{
+			else{
+				try{
+					plane = waitingPlanes.dequeue();
+				}catch(QueueException e){
+					occuringPlanes = false;
+				}
+			}
+			boolean halt = true;
+			String runway = null;
+			while(halt && occuringPlanes)
+			{
+				System.out.println("Enter a runway for flight " + plane.toString());
+				runway = stdin.readLine().trim();
+				System.out.println(runway);
+				if(name.equals(runway)){
+					System.out.println("This is the runway that is closing.");
+				}
+				else if(!tower.isExistingRunwayName(runway)){
+					System.out.println("This is not a valid runway!");
+				}
+				else{
+					if(!waitingQueue)
+					{
+						System.out.println(plane.toString() + " is waiting for takeoff on runway " + runway);
+						tower.addPlaneToRunway(plane ,runway);
+					}
+					else
+					{
+						System.out.println(plane.toString() + " is waiting to re-enter runway " + runway);
+						tower.setPlaneReenterTarget(plane, runway);
+					}
+					halt = false;
+				}
+			}
 
 		}
 		System.out.println("Runway " + name + " has been closed.");
