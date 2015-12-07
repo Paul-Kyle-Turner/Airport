@@ -28,6 +28,15 @@ public class Tower implements TowerInterface{
 			return true;
 	}
 	
+	public boolean isLandingRunwayName(String name)
+	{
+		int index = findRunway(name);
+		if(index != -1 && runways.get(index).isLanding())
+			return true;
+		else
+			return false;
+	}
+	
 	public Runway retrieveRunway(String name)
 	{
 		int index = findRunway(name);

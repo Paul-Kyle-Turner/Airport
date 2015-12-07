@@ -170,6 +170,7 @@ public class Driver {
 				System.out.println("No such runway!");
 			}
 		}
+		boolean isLandingRunway = tower.isExistingLandingRunwayName(name);
 			QueueInterface<Plane> planes = tower.closeRunway(name);
 			try {
 				while(true)
