@@ -29,21 +29,19 @@ public class Driver {
 	 * Asks for number of runways then asks for the names of each runway
 	 */
 	static void startingRunways() {
-		int value = 0;
+		int numRunways = 0;
 		boolean validNumRunways = false;
 		do {
-			value = getIndex("Number of starting runways");
-			if(value > 1)
+			numRunways = getIndex("Number of starting takeoff runways");
+			if(numRunways > 0)
 				validNumRunways = true;
 			else
-				System.out.println("There must be at least two runways (One for landing, one for takeoff)!");
+				System.out.println("There must be at least one takeoff runway!");
 		}while(!validNumRunways);
-		boolean hasLandingRunways = false;
-		boolean hasTakeoffRunways = false;
-		for(int i = 0; i < value; i++){
+		for(int i = 0; i < numRunways; i++){
 			String name = null;
 			do{
-				System.out.println("Please enter name of runway.");
+				System.out.println("Please enter name of takeoff runway: ");
 				try {
 					name = stdin.readLine().trim();
 				} catch (IOException e) {
@@ -51,6 +49,27 @@ public class Driver {
 				}
 			}while(tower.isExistingRunwayName(name));
 			tower.createNewRunway(name, false);
+		}
+		numRunways = 0;
+		validNumRunways = false;
+		do {
+			numRunways = getIndex("Number of starting landing runways");
+			if(numRunways > 0)
+				validNumRunways = true;
+			else
+				System.out.println("There must be at least one landing runway!");
+		}while(!validNumRunways);
+		for(int i = 0; i < numRunways; i++){
+			String name = null;
+			do{
+				System.out.println("Please enter name of landing runway: ");
+				try {
+					name = stdin.readLine().trim();
+				} catch (IOException e) {
+					System.out.println("Something broke in startingRunways");
+				}
+			}while(tower.isExistingRunwayName(name));
+			tower.createNewRunway(name, true);
 		}
 	}
 
