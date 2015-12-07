@@ -26,7 +26,6 @@ public class Runway {
 	 * @param landing
 	 * @param open
 	 */
-
 	public Runway(String name, boolean landing)
 	{
 		this.name = name;
@@ -35,15 +34,6 @@ public class Runway {
 		this.name = name;
 	}//end constructor 
 	
-	/**
-	 * Adds a plane to the front of the queue
-	 * @param plane
-	 */
-	/*
-	public void addPlaneToFront(Plane plane){
-		planeQueue.enqueue(plane);
-	}//end addFront
-	*/
 	/**
 	 * Adds a plane to the back of the queue
 	 * @param plane
@@ -65,42 +55,6 @@ public class Runway {
 		}
 	}//end remove from front
 	
-	/**
-	 * removes the plane from the back of the queue
-	 * if catches a list index out of bounds, returns a null
-	 * @return
-	 */
-	/*
-	public Plane removePlaneFromBack(){
-		try{
-			Plane temp = planeQueue.get(planeQueue.size()-1);
-			planeQueue.remove(planeQueue.size()-1);
-			return temp;
-		}catch(ListIndexOutOfBoundsException e){
-			return null;
-		}
-	}//end removePlaneFromBack
-	*/
-	
-	/**
-	 * searches for the correct item in this list via sequential search
-	
-	  * possible change in this codes implementation
-	 * @param key
-	 * @return
-	 */
-	/*
-	public Plane findAndRemovePlaneFromQueue(String key){
-		Plane temp = null;
-		for(int i = 0; i < planeQueue.size()-1;i++){
-			if(planeQueue.get(i).getKey().equals(key)){
-				temp = planeQueue.get(i);
-				planeQueue.remove(i);
-			}
-		}
-		return temp;
-	}//end findAndRemovePlaneFromQueue
-	*/
 	/**
 	 * removes all items from the queue
 	 */
@@ -134,6 +88,10 @@ public class Runway {
 		this.landing = landing;
 	}
 
+	/**
+	 * 
+	 * @return The name of the runway
+	 */
 	public String getName()
 	{
 		return name;
@@ -146,11 +104,24 @@ public class Runway {
 		this.name = name;
 	}
 
+	/**
+	 * Returns this runway as a String
+	 * @return A header of what is happening on this runway, and the planes waiting on it
+	 */
 	@Override
 	public String toString() {
 		if(planeQueue.isEmpty())
 		{
-			return "No planes waiting for takeoff on runway " + name;
+			if(landing)
+				return "No planes waiting to land on runway " + name;
+			else
+				return "No planes waiting for takeoff on runway " + name;
+		}
+		else if(landing)
+		{
+			String value = "These planes are waiting to land on runway " + name + "\n";
+			value += planeQueue;
+			return value;
 		}
 		else
 		{
