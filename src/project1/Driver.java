@@ -120,7 +120,7 @@ public class Driver {
 			displayInfoAboutPlanesWaitingToReEnter();
 			break;
 		case 8 :
-			System.out.println("The number of planes that have taken off is " + numberOfPlanesLeft);
+			System.out.println("The number of planes that have taken-off/landed is " + numberOfPlanesLeft);
 			break;
 		case 9 :
 			programEnd = false;
@@ -170,11 +170,11 @@ public class Driver {
 		}while(unrecognized);
 		
 		if(isLanding && !tower.hasMultipleLandingRunways()){
-			System.out.println("The government requires at least one open landing runway.");
+			System.out.println("The government requires at least one open landing runway.\n");
 			return;
 		}
 		else if(!isLanding && !tower.hasMultipleTakeoffRunways()){
-			System.out.println("The government requires at least one open takeoff runway.");
+			System.out.println("The government requires at least one open takeoff runway.\n");
 			return;
 		}
 
@@ -415,7 +415,7 @@ public class Driver {
 				+ "5.Runway Closes.\n"
 				+ "6.Display info about planes waiting to take off.\n"
 				+ "7.Display info about planes waiting to be allowed to re-enter a runway.\n"
-				+ "8.Display number of planes who have taken off.\n"
+				+ "8.Display number of planes who have taken off/landed.\n"
 				+ "9.End the program.");
 	}
 }
