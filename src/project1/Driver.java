@@ -185,7 +185,7 @@ public class Driver {
 						}
 						else{
 							System.out.println("Flight " + plane.toString() + " is waiting to reenter runway " + runway);
-							plane.setRunway(runway);
+							tower.setPlaneReenterTarget(plane, runway);
 							halt = false;
 						}
 					}

@@ -1,34 +1,6 @@
 package project1;
 
 public class Tower implements TowerInterface{
-
-	private class PlaneValidation extends ValidationKey {
-		private Plane plane;
-		public PlaneValidation(boolean isValid, Plane plane)
-		{
-			this.isValid = isValid;
-			this.plane = plane;
-		}
-		
-		public Plane getPlane()
-		{
-			return plane;
-		}
-	}
-	
-	private class RunwayValidation extends ValidationKey {
-		private Runway runway;
-		public RunwayValidation(boolean isValid, Runway runway)
-		{
-			this.isValid = isValid;
-			this.runway = runway;
-		}
-		
-		public Runway getRunway()
-		{
-			return runway;
-		}
-	}
 	
 	
 	private AscendinglyOrderedListADT<Plane, String> planes;
@@ -246,6 +218,13 @@ public class Tower implements TowerInterface{
 				index++;
 			}
 		}
+	}
+	
+	public void setPlaneReenterTarget(Plane plane, String name)
+	{
+		int index = findRunway(name);
+		if(index != -1)
+			plane.setRunway(runways.get(index));
 	}
 
 	@Override
