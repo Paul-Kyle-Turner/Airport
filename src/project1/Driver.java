@@ -171,17 +171,19 @@ public class Driver {
 			}
 		}
 		boolean isLandingRunway = tower.isExistingLandingRunwayName(name);
-			QueueInterface<Plane> planes = tower.closeRunway(name);
-			try {
-				while(true)
+		QueueInterface<Plane> planes = tower.closeRunway(name);
+		try {
+			for(int nullCount = 0; nullCount < 2;)
+			{
+				boolean waitingPlanes = false;
+				Plane plane = planes.dequeue();
+				if(plane == null)
 				{
-					boolean waitingPlanes = false;
-					Plane plane = planes.dequeue();
-					if(plane == null)
-					{
-						plane = planes.dequeue();
-						waitingPlanes = true;
-					}
+					plane = planes.dequeue();
+					waitingPlanes = true;
+					nullCount++;
+				}
+				else{
 					boolean halt = true;
 					String runway = null;
 					while(halt)
@@ -210,10 +212,11 @@ public class Driver {
 						}
 					}
 				}
-			} catch(QueueException e)
-			{
-				
 			}
+		} catch(QueueException e)
+		{
+
+		}
 		System.out.println("Runway " + name + " has been closed.");
 	}
 
@@ -331,7 +334,7 @@ public class Driver {
 					runwayName = stdin.readLine().trim();
 					destination = "Airport";
 				}while(!tower.isExistingLandingRunwayName(runwayName));
-				
+
 				unrecognized = false;
 			}
 		}while(unrecognized);
