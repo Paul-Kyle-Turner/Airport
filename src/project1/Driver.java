@@ -209,7 +209,7 @@ public class Driver {
 	}
 
 	/**
-	 * 
+	 * when plane leaves the system the gets the next plane in round robbin and then asks for a Y or N for the ability to let it take off
 	 * @throws IOException
 	 */
 	private static void planeLeavesTheSystem() throws IOException {
@@ -236,6 +236,11 @@ public class Driver {
 
 	}
 
+	/**
+	 * plane entering the system.
+	 * When the plane enters the system the name is asked and checked then the ruwnay that it wants to be placed on is checked
+	 * @throws IOException
+	 */
 	private static void planeEntersSystem() throws IOException {
 		String flightNumber = null;
 		String runwayName = null;
