@@ -315,7 +315,7 @@ public class Driver {
 	 */
 	private static void planeLeavesTheSystem() throws IOException {
 		if(!tower.hasPlanesOnRunways()){
-			System.out.println("There are no planes on runways for takeoff.");
+			System.out.println("There are no planes waiting for takeoff/landing.");
 			return;
 		}
 		boolean unrecognized = true;
